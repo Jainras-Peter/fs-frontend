@@ -1,0 +1,39 @@
+<header class="bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <!-- Logo Section -->
+            <div class="flex items-center">
+                <a routerLink="/" class="flex-shrink-0 flex items-center">
+                    <!-- Placeholder Logo Icon -->
+                    <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center mr-2">
+                        <span class="text-white font-bold text-xl">F</span>
+                    </div>
+                    <span class="font-bold text-xl text-slate-900 tracking-tight">FreightShip</span>
+                </a>
+                <div class="hidden sm:ml-8 sm:flex sm:space-x-8">
+                    <a routerLink="/" routerLinkActive="border-blue-500 text-gray-900"
+                        [routerLinkActiveOptions]="{exact: true}"
+                        class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        Home
+                    </a>
+                    <a routerLink="/generate" routerLinkActive="border-blue-500 text-gray-900"
+                        class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        Generate
+                    </a>
+                    <a routerLink="/dashboard" routerLinkActive="border-blue-500 text-gray-900"
+                        class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        Dashboard
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Side Actions (Login/Signup placeholders) -->
+            <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
+                <button class="text-slate-500 hover:text-slate-700 font-medium text-sm">Log in</button>
+                <button
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors text-sm">Sign
+                    up</button>
+            </div>
+        </div>
+    </div>
+</header>

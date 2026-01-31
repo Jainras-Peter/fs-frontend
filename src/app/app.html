@@ -1,8 +1,7 @@
-<h1>Welcome to Freight Ship</h1>
-
-<h1 class="text-3xl font-bold underline bg-amber-700">
-  Tailwind Testing....
-</h1>
-
-<h1>Prime ng testing ......</h1>
-<primeng-testing></primeng-testing>
+<app-header></app-header>
+<main>
+  <router-outlet></router-outlet>
+</main>
+@if (showFooter) {
+<app-footer></app-footer>
+}
