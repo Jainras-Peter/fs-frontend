@@ -1,0 +1,27 @@
+<div class="sticky top-24 space-y-2">
+    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 px-3">Generation Mode</h3>
+
+    <button (click)="setMode('doc-to-doc')"
+        class="w-full flex items-center p-3 rounded-lg text-sm font-medium transition-all"
+        [ngClass]="activeMode === 'doc-to-doc' ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-200 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'">
+        <div class="p-2 rounded-md mr-3" [ngClass]="activeMode === 'doc-to-doc' ? 'bg-blue-100' : 'bg-slate-100'">
+            <lucide-icon [img]="FileText" class="h-5 w-5"></lucide-icon>
+        </div>
+        <div class="text-left">
+            <div class="font-semibold">Document to Document</div>
+            <div class="text-xs opacity-75 font-normal">MBL to HBL Conversion</div>
+        </div>
+    </button>
+
+    <button (click)="setMode('info-to-doc')"
+        class="w-full flex items-center p-3 rounded-lg text-sm font-medium transition-all"
+        [ngClass]="activeMode === 'info-to-doc' ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-200 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'">
+        <div class="p-2 rounded-md mr-3" [ngClass]="activeMode === 'info-to-doc' ? 'bg-blue-100' : 'bg-slate-100'">
+            <lucide-icon [img]="Keyboard" class="h-5 w-5"></lucide-icon>
+        </div>
+        <div class="text-left">
+            <div class="font-semibold">Info to Document</div>
+            <div class="text-xs opacity-75 font-normal">Manual Data Entry</div>
+        </div>
+    </button>
+</div>

@@ -1,1 +1,21 @@
-<p>generate works!</p>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex flex-col md:flex-row gap-8">
+
+        <!-- Left Navigation Sidebar -->
+        <aside class="w-full md:w-64 flex-shrink-0">
+            <app-generate-sidebar [activeMode]="activeMode" (modeChange)="onModeChange($event)">
+            </app-generate-sidebar>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 min-w-0">
+
+            <!-- Mode: Document to Document -->
+            <app-doc-to-doc *ngIf="activeMode === 'doc-to-doc'"></app-doc-to-doc>
+
+            <!-- Mode: Info to Document -->
+            <app-info-to-doc *ngIf="activeMode === 'info-to-doc'"></app-info-to-doc>
+
+        </div>
+    </div>
+</div>
