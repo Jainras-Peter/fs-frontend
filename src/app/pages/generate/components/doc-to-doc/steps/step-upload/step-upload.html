@@ -35,7 +35,9 @@
     <div class="bg-white border-2 border-dashed border-slate-200 rounded-2xl overflow-hidden min-h-[300px] flex flex-col items-center justify-center relative group hover:border-blue-300 transition-colors cursor-pointer"
         (click)="fileInput.click()">
         <div *ngIf="uploadedImage; else emptyState" class="relative w-full h-full flex flex-col items-center p-6">
-            <img [src]="uploadedImage" alt="MBL Preview" class="max-h-[200px] object-contain mb-4 rounded shadow-sm" />
+            <img *ngIf="!isPdf" [src]="uploadedImage" alt="MBL Preview" class="max-h-[200px] object-contain mb-4 rounded shadow-sm" />
+            <object *ngIf="isPdf" [data]="uploadedImage" type="application/pdf"
+                class="w-full h-[200px] mb-4 rounded shadow-sm border border-slate-200"></object>
             <p class="text-emerald-600 text-sm font-semibold flex items-center mt-2">
                 <lucide-icon [img]="Check" class="h-4 w-4 mr-2"></lucide-icon> File Uploaded
             </p>
@@ -50,11 +52,11 @@
                     <lucide-icon [img]="Upload" class="h-8 w-8 text-slate-400"></lucide-icon>
                 </div>
                 <p class="text-slate-600 font-bold">Drop MBL scan here</p>
-                <p class="text-slate-400 text-xs mt-1">Supports PNG, JPG (Max 10MB)</p>
+                <p class="text-slate-400 text-xs mt-1">Supports PDF, PNG, JPG (Max 10MB)</p>
             </div>
         </ng-template>
 
-        <input #fileInput type="file" class="hidden" accept="image/*" (change)="onFileSelected($event)" />
+        <input #fileInput type="file" class="hidden" accept="image/*,application/pdf" (change)="onFileSelected($event)" />
     </div>
 
     <div class="flex justify-center">

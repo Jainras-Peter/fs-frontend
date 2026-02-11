@@ -17,6 +17,7 @@ export class StepUploadComponent {
   hblType = 'House BL';
   uploadedImage: string | null = null;
   fileName: string | null = null;
+  isPdf = false;
 
   readonly Upload = Upload;
   readonly Check = Check;
@@ -26,7 +27,18 @@ export class StepUploadComponent {
   onFileSelected(event: any) {
     const file = event.target.files?.[0];
     if (file) {
+      const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+      const isImage = file.type.startsWith('image/');
+      if (!isPdf && !isImage) {
+        alert('Unsupported file type. Please upload a PDF or image (PNG/JPG).');
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File is too large. Max size is 10MB.');
+        return;
+      }
       this.fileName = file.name;
+      this.isPdf = isPdf;
       const reader = new FileReader();
       reader.onloadend = () => {
         this.uploadedImage = reader.result as string;
