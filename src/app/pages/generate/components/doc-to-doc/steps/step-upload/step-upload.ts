@@ -11,11 +11,13 @@ import { LucideAngularModule, Upload, Check, ChevronDown, ArrowRight } from 'luc
   styleUrl: './step-upload.css'
 })
 export class StepUploadComponent {
-  @Output() complete = new EventEmitter<{ image: string, mblType: string, hblType: string }>();
+  @Output() complete = new EventEmitter<{ image: string, file: File, mblType: string, hblType: string, mode: string }>();
 
   mblType = 'Master BL';
   hblType = 'House BL';
+  mode = 'FCL';
   uploadedImage: string | null = null;
+  uploadedFile: File | null = null;
   fileName: string | null = null;
   isPdf = false;
 
@@ -38,6 +40,7 @@ export class StepUploadComponent {
         return;
       }
       this.fileName = file.name;
+      this.uploadedFile = file;
       this.isPdf = isPdf;
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -51,8 +54,10 @@ export class StepUploadComponent {
     if (this.uploadedImage) {
       this.complete.emit({
         image: this.uploadedImage,
+        file: this.uploadedFile!,
         mblType: this.mblType,
-        hblType: this.hblType
+        hblType: this.hblType,
+        mode: this.mode
       });
     } else {
       alert("Please upload a document first.");

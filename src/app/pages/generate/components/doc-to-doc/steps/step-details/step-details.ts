@@ -13,7 +13,8 @@ import { ButtonModule } from 'primeng/button';
 })
 export class StepDetailsComponent {
   @Input() initialMbl = '';
-  @Input() initialShipper: string[] = [];
+  @Input() initialShipper: string[] = []; // Pre-selected
+  @Input() availableShippers: string[] = []; // List to display
   @Output() back = new EventEmitter<void>();
   @Output() complete = new EventEmitter<{ mblNumber: string, localShippers: string[] }>();
 
@@ -37,7 +38,14 @@ export class StepDetailsComponent {
   ngOnInit() {
     this.mblNumber = this.initialMbl;
     // ensure it is an array if passed back
-    this.selectedShippers = Array.isArray(this.initialShipper) ? [...this.initialShipper] : [];
+    // If availableShippers provided, use them instead of Mock
+    if (this.availableShippers && this.availableShippers.length > 0) {
+      this.MOCK_SHIPPERS = [...this.availableShippers];
+      // Select all by default? Or none? Let's select all for convenience
+      this.selectedShippers = [...this.availableShippers];
+    } else {
+      this.selectedShippers = Array.isArray(this.initialShipper) ? [...this.initialShipper] : [];
+    }
   }
 
   toggleShipper(shipper: string, isChecked: boolean) {

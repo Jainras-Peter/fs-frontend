@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LucideAngularModule, Check, ChevronRight, ArrowLeft } from 'lucide-angular';
+import { HttpClient } from '@angular/common/http';
+import { LucideAngularModule, Check, ChevronRight, ArrowLeft, Loader2 } from 'lucide-angular';
 import { StepUploadComponent } from './steps/step-upload/step-upload';
 import { StepDetailsComponent } from './steps/step-details/step-details';
 import { StepFinalizeComponent } from './steps/step-finalize/step-finalize';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-doc-to-doc',
@@ -13,55 +16,137 @@ import { StepFinalizeComponent } from './steps/step-finalize/step-finalize';
     LucideAngularModule,
     StepUploadComponent,
     StepDetailsComponent,
-    StepFinalizeComponent
+    StepFinalizeComponent,
+    ToastModule
   ],
+  providers: [MessageService],
   templateUrl: './doc-to-doc.html',
   styleUrl: './doc-to-doc.css'
 })
 export class DocToDocComponent {
+  private http = inject(HttpClient);
+  private messageService = inject(MessageService);
+  private cdr = inject(ChangeDetectorRef);
   currentStep = 1;
+  isLoading = false;
 
   // Shared State
   formData = {
     mblType: 'Master BL',
     hblType: 'House BL',
+    mode: 'FCL',
     uploadedImage: null as string | null,
     mblNumber: '',
-    selectedShippers: [] as string[],
-    previewData: {}
+    shipperObjects: [] as any[], // Store full objects {shipper_id, shipper_name}
+    selectedShippers: [] as string[], // Names for Step 2 display
+    hblList: [] as any[] // Generated HBLs for Step 3
   };
 
   readonly Check = Check;
   readonly ChevronRight = ChevronRight;
   readonly ArrowLeft = ArrowLeft;
+  readonly Loader2 = Loader2;
 
   goToStep(step: number) {
     this.currentStep = step;
   }
 
   // Handlers for step outputs
-  onUploadComplete(data: { image: string, mblType: string, hblType: string }) {
+  onUploadComplete(data: { image: string, file: File, mblType: string, hblType: string, mode: string }) {
     this.formData.uploadedImage = data.image;
     this.formData.mblType = data.mblType;
     this.formData.hblType = data.hblType;
-    this.goToStep(2);
+    this.formData.mode = data.mode;
+
+    // Call API
+    this.isLoading = true;
+    const formData = new FormData();
+    formData.append('file', data.file);
+    formData.append('from_doc', 'mbl');
+    formData.append('to_doc', 'hbl');
+    formData.append('mode', data.mode);
+
+    this.http.post<any>('http://localhost:5000/api/v1/convert/mbl', formData)
+      .subscribe({
+        next: (res) => {
+          this.isLoading = false;
+          this.formData.mblNumber = res.mbl_number;
+
+          // Map shipper list to just names or IDs for now. 
+          // The API returns { shipper_id, shipper_name, ... } objects in shipper_list?
+          // Let's check the Go model: ConvertMBLResponse { MBLNumber, ShipperList []ShipperDetail }
+          // ShipperDetail has ShipperName.
+
+          if (res.shipper_list && Array.isArray(res.shipper_list)) {
+            // Store full objects for ID lookup later
+            this.formData.shipperObjects = res.shipper_list;
+            // map mapping to names for Step 2 display
+            this.formData.selectedShippers = res.shipper_list.map((s: any) => s.shipper_name || s.shipper_id);
+          }
+
+          this.goToStep(2);
+          this.cdr.detectChanges(); // Force update
+        },
+        error: (err) => {
+          this.isLoading = false;
+          this.cdr.detectChanges(); // Force update
+          console.error('API Error:', err);
+          setTimeout(() => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Processing Failed',
+              detail: err.error?.error || err.message || 'Unknown error occurred',
+              life: 5000
+            });
+          }, 100);
+        }
+      });
   }
 
   onDetailsComplete(data: { mblNumber: string, localShippers: string[] }) {
     this.formData.mblNumber = data.mblNumber;
-    this.formData.selectedShippers = data.localShippers;
-    // Mock generate preview data
-    this.formData.previewData = {
-      shipper: data.localShippers.join('\n'),
-      consignee: 'FAST TRACK LOGISTICS INC\n456 HARBOR DR\nLOS ANGELES, CA, USA',
-      notifyParty: 'SAME AS CONSIGNEE',
-      vessel: 'HYUNDAI PLUTO / 004E',
-      pol: 'BUSAN, KOREA',
-      pod: 'LOS ANGELES, USA',
-      goodsDesc: '1X40HC CONTAINER STC:\n800 BOXES OF AUTOMOTIVE PARTS\nHS CODE: 8708.99',
-      weight: '18,500 KGS / 45.2 CBM'
+    // data.localShippers contains selected NAMES. We need to map back to IDs.
+
+    const selectedIds = data.localShippers.map(name => {
+      const found = this.formData.shipperObjects.find(s => (s.shipper_name || s.shipper_id) === name);
+      return found ? found.shipper_id : name;
+    }).filter(id => id); // Remove nulls if any
+
+    // Call /preview/hbl API
+    this.isLoading = true;
+    const payload = {
+      mbl_number: this.formData.mblNumber,
+      shipper_list: selectedIds
     };
-    this.goToStep(3);
+
+    this.http.post<any>('http://localhost:5000/api/v1/preview/hbl', payload)
+      .subscribe({
+        next: (res) => {
+          this.isLoading = false;
+          if (res.hbl_list && Array.isArray(res.hbl_list)) {
+            this.formData.hblList = res.hbl_list;
+            this.goToStep(3);
+          } else {
+            this.messageService.add({ severity: 'warn', summary: 'No HBLs Generated', detail: 'The server returned no HBL documents.' });
+            // Stay on step 2? Or go to 3 empty?
+            // Stay on 2 for now.
+          }
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.isLoading = false;
+          this.cdr.detectChanges();
+          console.error('Preview API Error:', err);
+          this.messageService.add({ severity: 'error', summary: 'Preview Failed', detail: err.error?.error || err.message });
+        }
+      });
+  }
+
+  handleRefresh() {
+    this.onDetailsComplete({
+      mblNumber: this.formData.mblNumber,
+      localShippers: this.formData.selectedShippers
+    });
   }
 
   onBack() {
