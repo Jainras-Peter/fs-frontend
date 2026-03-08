@@ -7,6 +7,7 @@ import { StepDetailsComponent } from './steps/step-details/step-details';
 import { StepFinalizeComponent } from './steps/step-finalize/step-finalize';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { DocGeneratorService } from '../../services/doc-generator.service';
 
 @Component({
   selector: 'app-doc-to-doc',
@@ -27,6 +28,7 @@ export class DocToDocComponent {
   private http = inject(HttpClient);
   private messageService = inject(MessageService);
   private cdr = inject(ChangeDetectorRef);
+  private docGeneratorService = inject(DocGeneratorService);
   currentStep = 1;
   isLoading = false;
 
@@ -39,7 +41,8 @@ export class DocToDocComponent {
     mblNumber: '',
     shipperObjects: [] as any[], // Store full objects {shipper_id, shipper_name}
     selectedShippers: [] as string[], // Names for Step 2 display
-    hblList: [] as any[] // Generated HBLs for Step 3
+    hblList: [] as any[], // Generated HBLs for Step 3
+    totalCount: 0 // From preview/hbl response, used in onConfirm()
   };
 
   readonly Check = Check;
@@ -125,6 +128,7 @@ export class DocToDocComponent {
           this.isLoading = false;
           if (res.hbl_list && Array.isArray(res.hbl_list)) {
             this.formData.hblList = res.hbl_list;
+            this.formData.totalCount = res.total_count ?? res.hbl_list.length;
             this.goToStep(3);
           } else {
             this.messageService.add({ severity: 'warn', summary: 'No HBLs Generated', detail: 'The server returned no HBL documents.' });
@@ -156,7 +160,28 @@ export class DocToDocComponent {
   }
 
   onConfirm() {
-    alert("House Bill of Lading (HBL) generated successfully!");
-    // Reset or navigate away
+    const payload = {
+      mbl_number: this.formData.mblNumber,
+      total_count: this.formData.totalCount,
+      hbl_list: this.formData.hblList
+    };
+
+    this.isLoading = true;
+    this.docGeneratorService.generateHbl(payload, { documentTo: 'hbl' }).subscribe({
+      next: () => {
+        this.isLoading = false;
+        alert('House Bill of Lading (HBL) generated successfully!');
+        // TODO: Reset wizard state or navigate away if needed
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error('Generate HBL Error:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Generation Failed',
+          detail: err.error?.error || err.message || 'Failed to generate HBL'
+        });
+      }
+    });
   }
 }
