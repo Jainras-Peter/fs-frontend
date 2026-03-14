@@ -26,25 +26,20 @@ export class StepDetailsComponent {
   readonly ArrowRight = ArrowRight;
   readonly FileText = FileText;
 
-  MOCK_SHIPPERS = [
-    "Global Logistics Corp",
-    "Pacific Maritime Exports",
-    "Evergreen Industrial Ltd",
-    "South China Trading Co",
-    "Shenzhen Tech Hub",
-    "Rotterdam Port Services"
-  ];
+  MOCK_SHIPPERS: string[] = []; // Re-declared the required empty array
+  hasShippers = true; // Added flag to track if we actually have shippers
 
   ngOnInit() {
     this.mblNumber = this.initialMbl;
-    // ensure it is an array if passed back
-    // If availableShippers provided, use them instead of Mock
-    if (this.availableShippers && this.availableShippers.length > 0) {
+    
+    // Check if availableShippers was explicitly provided (even if empty)
+    if (this.availableShippers) {
       this.MOCK_SHIPPERS = [...this.availableShippers];
-      // Select all by default? Or none? Let's select all for convenience
       this.selectedShippers = [...this.availableShippers];
+      this.hasShippers = this.MOCK_SHIPPERS.length > 0;
     } else {
       this.selectedShippers = Array.isArray(this.initialShipper) ? [...this.initialShipper] : [];
+      this.hasShippers = false;
     }
   }
 
