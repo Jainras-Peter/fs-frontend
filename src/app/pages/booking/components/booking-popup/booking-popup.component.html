@@ -1,0 +1,39 @@
+<p-dialog [header]="mode === 'add' ? 'Add New Shipper' : 'Edit Shipper'" 
+          [(visible)]="visible" 
+          (onHide)="closeDialog()"
+          [modal]="true" 
+          [style]="{ width: '50vw' }" 
+          [draggable]="false" 
+          [resizable]="false">
+          
+    <div class="flex flex-col gap-4 py-4">
+        <div class="flex gap-4">
+            <div class="flex flex-col gap-2 w-1/2">
+                <label for="shipperId" class="text-sm font-medium text-gray-700">Shipper ID</label>
+                <input pInputText id="shipperId" [(ngModel)]="shipper.shipper_id" placeholder="e.g. SHP005" class="w-full" />
+            </div>
+            
+            <div class="flex flex-col gap-2 w-1/2">
+                <label for="contact" class="text-sm font-medium text-gray-700">Contact</label>
+                <input pInputText id="contact" [(ngModel)]="shipper.shipper_contact" placeholder="+91-..." class="w-full" />
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label for="shipperName" class="text-sm font-medium text-gray-700">Shipper Name</label>
+            <input pInputText id="shipperName" [(ngModel)]="shipper.shipper_name" placeholder="Company Name" class="w-full" />
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label for="address" class="text-sm font-medium text-gray-700">Address</label>
+            <textarea rows="3" pInputText id="address" [(ngModel)]="shipper.shipper_address" placeholder="Full Address" class="w-full resize-none"></textarea>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end gap-2 mt-4">
+            <p-button label="Cancel" severity="secondary" outlined (click)="closeDialog()"></p-button>
+            <p-button [label]="mode === 'add' ? 'Add Shipper' : 'Update Shipper'" (click)="save()"></p-button>
+        </div>
+    </ng-template>
+</p-dialog>
