@@ -1,0 +1,193 @@
+<div class="flex h-full min-h-0 flex-col p-8">
+    <p-toast position="top-right"></p-toast>
+
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-800 tracking-tight">Shipment Specifications</h1>
+        <p class="text-gray-500 mt-1">Define and manage shipments for your registered shippers.</p>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="flex justify-end mb-6">
+        <p-button label="Add Shipment" icon="pi pi-plus" (click)="openAddPopup()"></p-button>
+    </div>
+
+    <!-- Table -->
+    <div class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm">
+        <p-table 
+            [value]="shipments" 
+            [tableStyle]="{ 'min-width': '60rem' }"
+            styleClass="p-datatable-sm"
+            [rowHover]="true"
+            [paginator]="true"
+            [rows]="10"
+            [scrollable]="true"
+            scrollHeight="flex">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th class="w-16">No</th>
+                    <th>Shipment ID</th>
+                    <th>Shipper ID</th>
+                    <th>Goods</th>
+                    <th>Weight</th>
+                    <th>MBL</th>
+                    <th class="text-center">Status</th>
+                    <th class="w-24 text-center">Action</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-shipment let-ri="rowIndex">
+                <tr>
+                    <td class="text-gray-500 font-medium">{{ri + 1}}</td>
+                    <!-- Clickable shipment ID to open sync popup -->
+                    <td class="font-semibold text-blue-600 cursor-pointer hover:underline" (click)="openSyncPopup(shipment)">
+                        {{shipment.shipment_id}}
+                    </td>
+                    <td>{{shipment.shipper_id}}</td>
+                    <td class="truncate max-w-xs" [title]="shipment.goods_description">{{shipment.goods_description}}</td>
+                    <td>{{shipment.gross_weight}} kg</td>
+                    <td class="text-blue-600 font-medium">{{shipment.mbl_number}}</td>
+                    <td class="text-center">
+                        <span [ngClass]="{
+                            'bg-green-100 text-green-700': shipment.status === 'MBL number Sycned',
+                            'bg-gray-100 text-gray-700': shipment.status !== 'MBL number Sycned'
+                        }" class="px-3 py-1 text-xs font-semibold rounded-full border border-gray-200 shadow-sm">
+                            {{shipment.status}}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="flex justify-center gap-2">
+                            <p-button 
+                                icon="pi pi-pencil" 
+                                [rounded]="true" 
+                                [text]="true" 
+                                severity="info"
+                                (click)="openEditPopup(shipment)"
+                                pTooltip="Edit Shipment">
+                            </p-button>
+                            <p-button 
+                                icon="pi pi-trash" 
+                                [rounded]="true" 
+                                [text]="true" 
+                                severity="danger"
+                                (click)="deleteShipment(shipment)"
+                                pTooltip="Delete Shipment">
+                            </p-button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="8" class="text-center p-8 text-gray-500">
+                        No shipments found. Click "Add Shipment" to create one.
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+<!-- Add/Edit Shipment Dialog -->
+<p-dialog [header]="popupMode === 'add' ? 'Add New Shipment' : 'Edit Shipment'" 
+          [(visible)]="displayPopup" 
+          [modal]="true" 
+          [style]="{ width: '50vw' }" 
+          [draggable]="false" 
+          [resizable]="false">
+          
+    <div class="flex flex-col gap-4 py-4 max-h-[60vh] overflow-y-auto px-2">
+        <div class="flex gap-4">
+            <div class="flex flex-col gap-2 w-1/2">
+                <label class="text-sm font-medium text-gray-700">Shipper ID</label>
+                <input pInputText [(ngModel)]="currentShipment.shipper_id" placeholder="e.g. SHP001" class="w-full" />
+            </div>
+            
+            <div class="flex flex-col gap-2 w-1/2">
+                <label class="text-sm font-medium text-gray-700">Packages Count</label>
+                <input pInputText type="number" [(ngModel)]="currentShipment.packages_count" placeholder="0" class="w-full" />
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium text-gray-700">Goods Description</label>
+            <input pInputText [(ngModel)]="currentShipment.goods_description" placeholder="Description of goods" class="w-full" />
+        </div>
+
+        <div class="flex gap-4">
+            <div class="flex flex-col gap-2 w-1/3">
+                <label class="text-sm font-medium text-gray-700">Gross Weight (kg)</label>
+                <input pInputText type="number" [(ngModel)]="currentShipment.gross_weight" placeholder="0.0" class="w-full" />
+            </div>
+            <div class="flex flex-col gap-2 w-1/3">
+                <label class="text-sm font-medium text-gray-700">Net Weight (kg)</label>
+                <input pInputText type="number" [(ngModel)]="currentShipment.net_weight" placeholder="0.0" class="w-full" />
+            </div>
+            <div class="flex flex-col gap-2 w-1/3">
+                <label class="text-sm font-medium text-gray-700">Volume (CBM)</label>
+                <input pInputText type="number" [(ngModel)]="currentShipment.volume" placeholder="0.0" class="w-full" />
+            </div>
+        </div>
+
+        <div class="flex gap-4">
+            <div class="flex flex-col gap-2 w-1/2">
+                <label class="text-sm font-medium text-gray-700">Marks and Numbers</label>
+                <input pInputText [(ngModel)]="currentShipment.marks_and_numbers" placeholder="Marks & Nos" class="w-full" />
+            </div>
+            <div class="flex flex-col gap-2 w-1/2">
+                <label class="text-sm font-medium text-gray-700">Measurement</label>
+                <input pInputText [(ngModel)]="currentShipment.measurement" placeholder="Dimensions" class="w-full" />
+            </div>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end gap-2 mt-4">
+            <p-button label="Cancel" severity="secondary" outlined (click)="displayPopup = false"></p-button>
+            <p-button [label]="popupMode === 'add' ? 'Add Shipment' : 'Update Shipment'" (click)="saveShipment()"></p-button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<!-- Sync Booking Dialog (Shipment Details) -->
+<p-dialog header="Shipment Details" 
+          [(visible)]="displaySyncPopup" 
+          [modal]="true" 
+          [style]="{ width: '40vw' }" 
+          [draggable]="false" 
+          [resizable]="false">
+          
+    <div class="flex flex-col gap-6 py-4">
+        <div class="text-gray-500 text-sm">ID: {{currentSyncShipment.shipment_id}}</div>
+        
+        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg border border-gray-100">
+            <div>
+                <div class="text-xs text-gray-500 uppercase font-semibold">Shipper</div>
+                <div class="font-medium text-gray-800">{{currentSyncShipment.shipper_id}}</div>
+            </div>
+            <div>
+                <div class="text-xs text-gray-500 uppercase font-semibold">Goods</div>
+                <div class="font-medium text-gray-800">{{currentSyncShipment.goods_description}}</div>
+            </div>
+            <div>
+                <div class="text-xs text-gray-500 uppercase font-semibold">Packages</div>
+                <div class="font-medium text-gray-800">{{currentSyncShipment.packages_count}} units</div>
+            </div>
+            <div>
+                <div class="text-xs text-gray-500 uppercase font-semibold">Weight / Volume</div>
+                <div class="font-medium text-gray-800">{{currentSyncShipment.gross_weight}}kg / {{currentSyncShipment.volume}}m³</div>
+            </div>
+        </div>
+
+        <div class="border border-blue-100 rounded-lg p-5 bg-blue-50/50 mt-2">
+            <div class="flex items-center gap-2 mb-4 text-blue-800 font-semibold">
+                <i class="pi pi-link"></i> Confirm Booking
+            </div>
+            <label class="text-sm font-medium text-blue-900 block mb-2">Master Bill of Lading (MBL) Number</label>
+            <div class="flex gap-3 relative">
+                <span class="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 font-semibold mt-[2px]">#</span>
+                <input pInputText [(ngModel)]="syncMblNumber" placeholder="MBL-IN-2024-..." class="w-full pl-8 border-blue-200 focus:border-blue-400 focus:ring-blue-100" style="padding-left: 2rem" />
+                <p-button label="Confirm" (click)="confirmSync()" [disabled]="!syncMblNumber"></p-button>
+            </div>
+        </div>
+    </div>
+</p-dialog>
