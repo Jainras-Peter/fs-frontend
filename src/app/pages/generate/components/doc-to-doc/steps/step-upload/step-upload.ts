@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule, Upload, Check, ChevronDown, ArrowRight } from 'lucide-angular';
@@ -12,6 +12,7 @@ import { LucideAngularModule, Upload, Check, ChevronDown, ArrowRight } from 'luc
 })
 export class StepUploadComponent {
   @Output() complete = new EventEmitter<{ image: string, file: File, mblType: string, hblType: string, mode: string }>();
+  private cdr = inject(ChangeDetectorRef);
 
   mblType = 'Master BL';
   hblType = 'House BL';
@@ -45,6 +46,7 @@ export class StepUploadComponent {
       const reader = new FileReader();
       reader.onloadend = () => {
         this.uploadedImage = reader.result as string;
+        this.cdr.detectChanges(); // Trigger update here
       };
       reader.readAsDataURL(file);
     }
