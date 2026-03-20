@@ -55,10 +55,7 @@ export class StepFinalizeComponent {
 
   handleConfirm() {
     this.isLoading = true;
-    setTimeout(() => {
-      this.isLoading = false;
-      this.confirm.emit();
-    }, 2000);
+    this.confirm.emit();
   }
 
   toggleEdit() {
@@ -67,7 +64,7 @@ export class StepFinalizeComponent {
 
   cancelEdit() {
     this.isEditing = false;
-    // Optionally revert changes if we had a deep copy. 
+    // Optionally revert changes if we had a deep copy.
     // Since we bind directly to previewData array object, cancelling ideally should revert.
     // For now, simpler to just exit mode.
   }
@@ -81,9 +78,8 @@ export class StepFinalizeComponent {
 
     this.isLoading = true;
     this.http.put(`http://localhost:5000/api/v1/hbl/${current.sea_waybill_no}`, current).subscribe({
-      next: (res) => {
+      next: () => {
         this.isLoading = false;
-        this.isEditing = false;
         this.isEditing = false;
         this.messageService.add({ severity: 'success', summary: 'HBL Updated', detail: 'Document saved successfully' });
         this.refresh.emit();

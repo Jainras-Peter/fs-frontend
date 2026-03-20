@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class DocGeneratorService {
   private http = inject(HttpClient);
-  /** fs-generator API (Express server runs on port 15372) */
-  private readonly baseUrl = 'http://localhost:15372/api/v1';
+  /** fs-generator API (Express server runs on port 3000) */
+  private readonly baseUrl = 'http://localhost:3000/api/v1';
 
   /**
    * Invokes POST /generate on the fs-generator backend.

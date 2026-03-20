@@ -2,6 +2,7 @@ import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { LucideAngularModule, Check, ChevronRight, ArrowLeft, Loader2 } from 'lucide-angular';
+import { Router } from '@angular/router';
 import { StepUploadComponent } from './steps/step-upload/step-upload';
 import { StepDetailsComponent } from './steps/step-details/step-details';
 import { StepFinalizeComponent } from './steps/step-finalize/step-finalize';
@@ -26,6 +27,7 @@ import { DocGeneratorService } from '../../services/doc-generator.service';
 })
 export class DocToDocComponent {
   private http = inject(HttpClient);
+  private router = inject(Router);
   private messageService = inject(MessageService);
   private cdr = inject(ChangeDetectorRef);
   private docGeneratorService = inject(DocGeneratorService);
@@ -159,6 +161,25 @@ export class DocToDocComponent {
     }
   }
 
+  private resolvePrimaryHblNumber(): string {
+    const primaryHbl = this.formData.hblList.find((item: any) => typeof item?.sea_waybill_no === 'string' && item.sea_waybill_no.trim());
+    return primaryHbl?.sea_waybill_no?.trim() || 'Not available';
+  }
+
+  private navigateToGenerationResult(status: 'success' | 'failed', errorMessage = ''): void {
+    this.router.navigate(['/generate/result'], {
+      queryParams: {
+        status,
+        mode: this.formData.mode,
+        hblNumber: this.resolvePrimaryHblNumber(),
+        totalCount: this.formData.totalCount || this.formData.hblList.length || 1
+      },
+      state: {
+        errorMessage
+      }
+    });
+  }
+
   onConfirm() {
     const payload = {
       mbl_number: this.formData.mblNumber,
@@ -170,17 +191,12 @@ export class DocToDocComponent {
     this.docGeneratorService.generateHbl(payload, { documentTo: 'hbl' }).subscribe({
       next: () => {
         this.isLoading = false;
-        alert('House Bill of Lading (HBL) generated successfully!');
-        // TODO: Reset wizard state or navigate away if needed
+        this.navigateToGenerationResult('success');
       },
       error: (err) => {
         this.isLoading = false;
         console.error('Generate HBL Error:', err);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Generation Failed',
-          detail: err.error?.error || err.message || 'Failed to generate HBL'
-        });
+        this.navigateToGenerationResult('failed', err.error?.error || err.message || 'Failed to generate HBL');
       }
     });
   }
