@@ -42,6 +42,7 @@ export class ShipmentComponent implements OnInit {
   displaySyncPopup = false;
   currentSyncShipment: Shipment = this.getEmptyShipment();
   syncMblNumber = '';
+  isMblSynced = false;
 
   ngOnInit() {
     this.loadShipments();
@@ -90,6 +91,7 @@ export class ShipmentComponent implements OnInit {
   openSyncPopup(shipment: Shipment) {
     this.currentSyncShipment = { ...shipment };
     this.syncMblNumber = shipment.mbl_number && shipment.mbl_number !== '-' ? shipment.mbl_number : '';
+    this.isMblSynced = !!this.syncMblNumber;
     this.displaySyncPopup = true;
   }
 

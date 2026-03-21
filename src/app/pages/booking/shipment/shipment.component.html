@@ -185,8 +185,8 @@
             <label class="text-sm font-medium text-blue-900 block mb-2">Master Bill of Lading (MBL) Number</label>
             <div class="flex gap-3 relative">
                 <span class="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 font-semibold mt-[2px]">#</span>
-                <input pInputText [(ngModel)]="syncMblNumber" placeholder="MBL-IN-2024-..." class="w-full pl-8 border-blue-200 focus:border-blue-400 focus:ring-blue-100" style="padding-left: 2rem" />
-                <p-button label="Confirm" (click)="confirmSync()" [disabled]="!syncMblNumber"></p-button>
+                <input pInputText [(ngModel)]="syncMblNumber" [disabled]="isMblSynced" placeholder="MBL-IN-2024-..." class="w-full pl-8 border-blue-200 focus:border-blue-400 focus:ring-blue-100" [ngClass]="{'bg-gray-100 text-gray-500 font-semibold cursor-not-allowed': isMblSynced}" style="padding-left: 2rem" />
+                <p-button *ngIf="!isMblSynced" label="Confirm" (click)="confirmSync()" [disabled]="!syncMblNumber"></p-button>
             </div>
         </div>
     </div>

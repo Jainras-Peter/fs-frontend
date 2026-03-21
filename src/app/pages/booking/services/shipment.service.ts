@@ -23,7 +23,7 @@ export interface Shipment {
 export class ShipmentService {
   private http = inject(HttpClient);
   // Defaulting to process.env.apiURL or localhost:5000 if not available
-  private apiUrl = 'http://localhost:5000/api/v1';
+  private apiUrl = 'http://localhost:5000/api/booking';
 
   getShipmentList(): Observable<Shipment[]> {
     return this.http.get<Shipment[]>(`${this.apiUrl}/shipments`);

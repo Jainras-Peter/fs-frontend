@@ -33,4 +33,20 @@ export class BookingService {
   deleteShipper(id: string): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/deleteshipper/${id}`);
   }
+
+  getStatusDetails(): Observable<StatusDetail[]> {
+    return this.http.get<StatusDetail[]>(`${this.apiUrl}/statusdetails`);
+  }
+
+  updateStatus(id: string, status: string): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/updatestatus/${id}`, { status });
+  }
+}
+
+export interface StatusDetail {
+  id: string;
+  mbl_number: string;
+  shipment_ids: string[];
+  status: string;
+  created_at: string;
 }
