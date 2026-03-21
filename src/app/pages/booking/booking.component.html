@@ -1,0 +1,25 @@
+<div class="flex h-[calc(100vh-4rem)] min-h-0 bg-gray-50">
+  <!-- Sidebar -->
+  <aside class="w-64 flex-shrink-0 border-r border-gray-200 bg-white">
+    <div class="p-4 border-b border-gray-200">
+      <h2 class="text-sm font-semibold text-gray-800 flex items-center gap-2">
+        <i class="pi pi-briefcase text-blue-600"></i>
+        Booking Manager
+      </h2>
+    </div>
+    <nav class="p-4 space-y-2 flex-grow overflow-y-auto w-full">
+      <a *ngFor="let item of navItems" 
+         [routerLink]="item.route" 
+         routerLinkActive="bg-blue-50 text-blue-700 border-l-4 border-blue-600"
+         class="block p-3 rounded-md hover:bg-gray-50 transition-colors cursor-pointer text-gray-700 text-sm">
+         <div class="font-medium mb-1">{{item.label}}</div>
+         <div class="text-xs text-gray-500 font-light">{{item.description}}</div>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="min-h-0 flex-1 overflow-auto bg-gray-50">
+    <router-outlet></router-outlet>
+  </main>
+</div>

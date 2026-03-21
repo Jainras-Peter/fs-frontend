@@ -1,0 +1,107 @@
+<div class="flex h-full min-h-0 flex-col p-8">
+    <p-toast position="top-right"></p-toast>
+
+    <!-- Header -->
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-gray-800 tracking-tight">Booking Status</h1>
+        <p class="text-gray-500 mt-1">View and manage the status of all registered bookings.</p>
+    </div>
+
+    <!-- Table -->
+    <div class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm">
+        <p-table 
+            [value]="statuses" 
+            [tableStyle]="{ 'min-width': '60rem' }"
+            styleClass="p-datatable-sm"
+            [rowHover]="true"
+            [paginator]="true"
+            [rows]="10"
+            [scrollable]="true"
+            scrollHeight="flex">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th class="w-16">No</th>
+                    <th>MBL Number</th>
+                    <th>Shipment List</th>
+                    <th>Created At</th>
+                    <th class="text-center">Status</th>
+                    <th class="w-24 text-center">Action</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-status let-ri="rowIndex">
+                <tr>
+                    <td class="text-gray-500 font-medium">{{ri + 1}}</td>
+                    <td class="font-semibold text-blue-600">{{status.mbl_number}}</td>
+                    <td>
+                        <span *ngIf="status.shipment_ids && status.shipment_ids.length > 0">
+                            {{ status.shipment_ids.join(', ') }}
+                        </span>
+                        <span *ngIf="!status.shipment_ids || status.shipment_ids.length === 0" class="text-gray-400 italic">None</span>
+                    </td>
+                    <td>{{status.created_at | date:'dd-MM-yyyy'}}</td>
+                    <td class="text-center">
+                        <span [ngClass]="{
+                            'bg-blue-100 text-blue-700': status.status === 'Booked',
+                            'bg-yellow-100 text-yellow-700': status.status === 'In Transit',
+                            'bg-green-100 text-green-700': status.status === 'Delivered',
+                            'bg-gray-100 text-gray-700': !['Booked', 'In Transit', 'Delivered'].includes(status.status)
+                        }" class="px-3 py-1 text-xs font-semibold rounded-full border border-gray-200 shadow-sm">
+                            {{status.status || 'Booked'}}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="flex justify-center gap-2">
+                            <p-button 
+                                icon="pi pi-pencil" 
+                                [rounded]="true" 
+                                [text]="true" 
+                                severity="info"
+                                (click)="openEditPopup(status)"
+                                pTooltip="Edit Status">
+                            </p-button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="6" class="text-center p-8 text-gray-500">
+                        No bookings found.
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+<!-- Edit Status Dialog -->
+<p-dialog header="Edit Booking Status" 
+          [(visible)]="displayPopup" 
+          [modal]="true" 
+          [style]="{ width: '400px' }" 
+          [draggable]="false" 
+          [resizable]="false">
+          
+    <div class="flex flex-col gap-4 py-4 px-2" *ngIf="currentStatus">
+        <div class="flex flex-col gap-2">
+            <span class="text-sm font-semibold text-gray-600 uppercase">MBL Number</span>
+            <span class="text-lg text-gray-800 font-medium">{{ currentStatus.mbl_number }}</span>
+        </div>
+        
+        <div class="flex flex-col gap-2 mt-2">
+            <label class="text-sm font-medium text-gray-700">Update Status</label>
+            <select
+                [(ngModel)]="selectedStatusValue"
+                class="w-full text-gray-800 p-2 border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                <option *ngFor="let opt of statusOptions" [value]="opt.value">{{ opt.label }}</option>
+            </select>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end gap-2 mt-4">
+            <p-button label="Cancel" severity="secondary" outlined (click)="displayPopup = false"></p-button>
+            <p-button label="Update Status" (click)="saveStatus()"></p-button>
+        </div>
+    </ng-template>
+</p-dialog>
