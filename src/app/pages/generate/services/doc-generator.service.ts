@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -7,18 +7,17 @@ import { Observable } from 'rxjs';
 })
 export class DocGeneratorService {
   private http = inject(HttpClient);
-  /** fs-generator API (Express server runs on port 3000) */
-  private readonly baseUrl = 'http://localhost:3000/api/v1';
+  /** Go backend API (Gin server runs on port 5000). */
+  private readonly baseUrl = 'http://localhost:5000/api/v1';
 
   /**
-   * Invokes POST /generate on the fs-generator backend.
-   * @param payload Request body (e.g. _id, shipment_id, hbl_number, hbl).
-   * @param params Optional query params (e.g. documentTo, required by the backend).
+   * Invokes POST /pdf-generator?documentTo=... on the Go backend.
+   * `documentTo` matches the "To" document type (e.g. House BL, Forwarder BL).
+   * The backend forwards to the PDF generator with the same query param.
    */
-  generateHbl(payload: any, params?: { documentTo?: string }): Observable<any> {
-    const url = params?.documentTo
-      ? `${this.baseUrl}/generate?documentTo=${encodeURIComponent(params.documentTo)}`
-      : `${this.baseUrl}/generate`;
-    return this.http.post<any>(url, payload)  }
+  generateHbl(payload: any, documentTo: string): Observable<any> {
+    const params = new HttpParams().set('documentTo', documentTo);
+    return this.http.post<any>(`${this.baseUrl}/pdf-generator`, payload, { params });
+  }
 }
 

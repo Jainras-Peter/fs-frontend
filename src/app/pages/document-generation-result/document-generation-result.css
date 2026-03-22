@@ -1,3 +1,9 @@
 :host {
   display: block;
 }
+
+/* Ensures the file list scrolls inside the flex dropdown on all browsers */
+.download-menu-scroll {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+}

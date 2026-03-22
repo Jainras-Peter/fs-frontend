@@ -166,7 +166,11 @@ export class DocToDocComponent {
     return primaryHbl?.sea_waybill_no?.trim() || 'Not available';
   }
 
-  private navigateToGenerationResult(status: 'success' | 'failed', errorMessage = ''): void {
+  private navigateToGenerationResult(
+    status: 'success' | 'failed',
+    errorMessage = '',
+    uploadedFiles: { filename: string; url: string }[] = []
+  ): void {
     this.router.navigate(['/generate/result'], {
       queryParams: {
         status,
@@ -175,7 +179,8 @@ export class DocToDocComponent {
         totalCount: this.formData.totalCount || this.formData.hblList.length || 1
       },
       state: {
-        errorMessage
+        errorMessage,
+        uploadedFiles
       }
     });
   }
@@ -188,10 +193,14 @@ export class DocToDocComponent {
     };
 
     this.isLoading = true;
-    this.docGeneratorService.generateHbl(payload, { documentTo: 'hbl' }).subscribe({
-      next: () => {
+    this.docGeneratorService.generateHbl(payload, this.formData.hblType).subscribe({
+      next: (res) => {
         this.isLoading = false;
-        this.navigateToGenerationResult('success');
+        const files = Array.isArray(res?.uploadedFiles) ? res.uploadedFiles : [];
+        const uploadedFiles = files
+          .filter((f: { filename?: string; url?: string }) => f?.filename && f?.url)
+          .map((f: { filename: string; url: string }) => ({ filename: f.filename, url: f.url }));
+        this.navigateToGenerationResult('success', '', uploadedFiles);
       },
       error: (err) => {
         this.isLoading = false;
