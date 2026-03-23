@@ -128,10 +128,9 @@
                 @for (file of uploadedFiles; track file.url) {
                   <li>
                     <a
-                      [href]="cloudinaryProxyHref(file.url)"
+                      [href]="file.url"
                       target="_blank"
                       rel="noopener noreferrer"
-                      [attr.download]="isCloudinaryUrl(file.url) ? null : ''"
                       class="flex items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-50"
                       (click)="closeDownloadMenu()"
                     >

@@ -130,19 +130,6 @@ export class DocumentGenerationResultComponent {
     return 'text-slate-600';
   }
 
-  /** Use backend redirect so Cloudinary can serve signed URLs (avoids 401 on restricted delivery). */
-  cloudinaryProxyHref(remoteUrl: string): string {
-    const u = (remoteUrl || '').trim();
-    if (!u || !/^https:\/\/res\.cloudinary\.com\//i.test(u)) {
-      return u;
-    }
-    return `${this.apiBase}/hbl-docs/cloudinary-file?url=${encodeURIComponent(u)}`;
-  }
-
-  isCloudinaryUrl(remoteUrl: string): boolean {
-    return /^https:\/\/res\.cloudinary\.com\//i.test((remoteUrl || '').trim());
-  }
-
   downloadArchive(): void {
     if (!this.hasDownloads || this.archiveLoading) return;
     this.archiveLoading = true;
@@ -166,7 +153,6 @@ export class DocumentGenerationResultComponent {
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          console.log('Url: ', url);
           a.download = name;
           a.click();
           URL.revokeObjectURL(url);
