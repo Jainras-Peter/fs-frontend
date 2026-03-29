@@ -19,5 +19,7 @@ export const routes: Routes = [
             { path: 'status', loadComponent: () => import('./pages/booking/status/status.component').then(m => m.StatusComponent) }
         ]
     },
+    { path: 'login', loadComponent: () => import('./User/login/login').then(m => m.Login) },
+    { path: 'signup', loadComponent: () => import('./User/signup/signup').then(m => m.Signup) },
     { path: '**', redirectTo: '' }
 ];
