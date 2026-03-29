@@ -4,10 +4,11 @@ import { HeaderComponent } from './components/header/header';
 import { FooterComponent } from './components/footer/footer';
 import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs/operators';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, CommonModule],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, CommonModule, ToastModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

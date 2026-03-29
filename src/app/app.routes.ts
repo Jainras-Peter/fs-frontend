@@ -3,14 +3,16 @@ import { LandingPageComponent } from './pages/landing-page/landing-page';
 import { GenerateComponent } from './pages/generate/generate';
 import { DashboardComponent } from './pages/dashboard/dashboard';
 import { DocumentGenerationResultComponent } from './pages/document-generation-result/document-generation-result';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
     { path: '', component: LandingPageComponent },
-    { path: 'generate/result', component: DocumentGenerationResultComponent },
-    { path: 'generate', component: GenerateComponent },
-    { path: 'dashboard', component: DashboardComponent },
+    { path: 'generate/result', component: DocumentGenerationResultComponent, canActivate: [authGuard] },
+    { path: 'generate', component: GenerateComponent, canActivate: [authGuard] },
+    { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
     { 
         path: 'booking', 
+        canActivate: [authGuard],
         loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent),
         children: [
             { path: '', redirectTo: 'shipper', pathMatch: 'full' },

@@ -18,7 +18,7 @@
 .hero {
   padding: 100px 24px 80px;
   position: relative;
-  min-height: 600px;
+  min-height: calc(100vh - 80px);
   display: flex;
   align-items: center;
 }
@@ -62,11 +62,14 @@
 }
 
 .hero-copy h1 span:first-child {
-  color: #1d4ed8;
+  color: #000105;
+  font-size: clamp(4.5rem, 6vw, 6rem);
 }
 
 .hero-copy h1 span:last-child {
   color: #0f172a;
+  font-size: clamp(1rem, 2vw, 2rem);
+  margin-top: 8px;
 }
 
 .eyebrow {
