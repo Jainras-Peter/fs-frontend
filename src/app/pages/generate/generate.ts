@@ -12,8 +12,13 @@ import { InfoToDocComponent } from './components/info-to-doc/info-to-doc';
 })
 export class GenerateComponent {
   activeMode: GenerateMode = 'doc-to-doc';
+  sidebarCollapsed = false;
 
   onModeChange(mode: GenerateMode) {
     this.activeMode = mode;
+  }
+
+  onSidebarToggle() {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
   }
 }
