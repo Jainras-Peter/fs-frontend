@@ -5,7 +5,6 @@ import {
   LucideAngularModule,
   Upload,
   Check,
-  ChevronDown,
   ArrowRight,
   LucideIconData,
   FileCheckCorner
