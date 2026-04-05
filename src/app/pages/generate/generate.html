@@ -8,10 +8,18 @@
         </aside>
 
         <!-- Main Content Area -->
-        <div class="flex-1 min-w-0">
-
+        <div class="relative flex-1 min-w-0">
+            <!-- Loading Overlay -->
+            <div *ngIf="isLoading"
+                 class="absolute top-[40%] left-[40%] flex flex-col items-center justify-center">
+              <lucide-icon [img]="Loader2" class="h-12 w-12 text-blue-600 animate-spin mb-4"></lucide-icon>
+              <p class="text-slate-600 font-medium animate-pulse">Processing document...</p>
+            </div>
             <!-- Mode: Document to Document -->
-            <app-doc-to-doc *ngIf="activeMode === 'doc-to-doc'"></app-doc-to-doc>
+            <app-doc-to-doc
+              *ngIf="activeMode === 'doc-to-doc'"
+              (loadingChange)="isLoading = $event">
+            </app-doc-to-doc>
 
             <!-- Mode: Info to Document -->
             <app-info-to-doc *ngIf="activeMode === 'info-to-doc'"></app-info-to-doc>

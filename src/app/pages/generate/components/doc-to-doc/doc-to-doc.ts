@@ -1,7 +1,7 @@
-import { Component, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, inject, Output, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { LucideAngularModule, Check, ChevronRight, ArrowLeft, Loader2 } from 'lucide-angular';
+import { LucideAngularModule, Check, ChevronRight, ArrowLeft } from 'lucide-angular';
 import { Router } from '@angular/router';
 import { StepUploadComponent } from './steps/step-upload/step-upload';
 import { StepDetailsComponent } from './steps/step-details/step-details';
@@ -33,12 +33,13 @@ export class DocToDocComponent {
   private docGeneratorService = inject(DocGeneratorService);
   currentStep = 1;
   isLoading = false;
+  @Output() loadingChange = new EventEmitter<boolean>();
 
   // Shared State
   formData = {
-    mblType: 'Master BL',
-    hblType: 'House BL',
-    mode: 'FCL',
+    mblType: '',
+    hblType: '',
+    model: '',
     uploadedImage: null as string | null,
     mblNumber: '',
     shipperObjects: [] as any[], // Store full objects {shipper_id, shipper_name}
@@ -50,34 +51,38 @@ export class DocToDocComponent {
   readonly Check = Check;
   readonly ChevronRight = ChevronRight;
   readonly ArrowLeft = ArrowLeft;
-  readonly Loader2 = Loader2;
+
+  private setLoading(isLoading: boolean) {
+    this.isLoading = isLoading;
+    this.loadingChange.emit(isLoading);
+  }
 
   goToStep(step: number) {
     this.currentStep = step;
   }
 
   // Handlers for step outputs
-  onUploadComplete(data: { image: string, file: File, mblType: string, hblType: string, mode: string }) {
+  onUploadComplete(data: { image: string, file: File, mblType: string, hblType: string, model: string }) {
     this.formData.uploadedImage = data.image;
     this.formData.mblType = data.mblType;
     this.formData.hblType = data.hblType;
-    this.formData.mode = data.mode;
+    this.formData.model = data.model;
 
     // Call API
-    this.isLoading = true;
+    this.setLoading(true);
     const formData = new FormData();
     formData.append('file', data.file);
     formData.append('from_doc', 'mbl');
     formData.append('to_doc', 'hbl');
-    formData.append('mode', data.mode);
+    formData.append('model', data.model);
 
     this.http.post<any>('http://localhost:5000/api/v1/convert/mbl', formData)
       .subscribe({
         next: (res) => {
-          this.isLoading = false;
+          this.setLoading(false);
           this.formData.mblNumber = res.mbl_number;
 
-          // Map shipper list to just names or IDs for now. 
+          // Map shipper list to just names or IDs for now.
           // The API returns { shipper_id, shipper_name, ... } objects in shipper_list?
           // Let's check the Go model: ConvertMBLResponse { MBLNumber, ShipperList []ShipperDetail }
           // ShipperDetail has ShipperName.
@@ -93,7 +98,7 @@ export class DocToDocComponent {
           this.cdr.detectChanges(); // Force update
         },
         error: (err) => {
-          this.isLoading = false;
+          this.setLoading(false);
           this.cdr.detectChanges(); // Force update
           console.error('API Error:', err);
           setTimeout(() => {
@@ -118,7 +123,7 @@ export class DocToDocComponent {
     }).filter(id => id); // Remove nulls if any
 
     // Call /preview/hbl API
-    this.isLoading = true;
+    this.setLoading(true);
     const payload = {
       mbl_number: this.formData.mblNumber,
       shipper_list: selectedIds
@@ -127,7 +132,7 @@ export class DocToDocComponent {
     this.http.post<any>('http://localhost:5000/api/v1/preview/hbl', payload)
       .subscribe({
         next: (res) => {
-          this.isLoading = false;
+          this.setLoading(false);
           if (res.hbl_list && Array.isArray(res.hbl_list)) {
             this.formData.hblList = res.hbl_list;
             this.formData.totalCount = res.total_count ?? res.hbl_list.length;
@@ -140,7 +145,7 @@ export class DocToDocComponent {
           this.cdr.detectChanges();
         },
         error: (err) => {
-          this.isLoading = false;
+          this.setLoading(false);
           this.cdr.detectChanges();
           console.error('Preview API Error:', err);
           this.messageService.add({ severity: 'error', summary: 'Preview Failed', detail: err.error?.error || err.message });
@@ -174,7 +179,7 @@ export class DocToDocComponent {
     this.router.navigate(['/generate/result'], {
       queryParams: {
         status,
-        mode: this.formData.mode,
+        model: this.formData.model,
         hblNumber: this.resolvePrimaryHblNumber(),
         totalCount: this.formData.totalCount || this.formData.hblList.length || 1
       },
@@ -192,10 +197,10 @@ export class DocToDocComponent {
       hbl_list: this.formData.hblList
     };
 
-    this.isLoading = true;
+    this.setLoading(true);
     this.docGeneratorService.generateHbl(payload, this.formData.hblType).subscribe({
       next: (res) => {
-        this.isLoading = false;
+        this.setLoading(false);
         const files = Array.isArray(res?.uploadedFiles) ? res.uploadedFiles : [];
         const uploadedFiles = files
           .filter((f: { filename?: string; url?: string }) => f?.filename && f?.url)
@@ -203,7 +208,7 @@ export class DocToDocComponent {
         this.navigateToGenerationResult('success', '', uploadedFiles);
       },
       error: (err) => {
-        this.isLoading = false;
+        this.setLoading(false);
         console.error('Generate HBL Error:', err);
         this.navigateToGenerationResult('failed', err.error?.error || err.message || 'Failed to generate HBL');
       }

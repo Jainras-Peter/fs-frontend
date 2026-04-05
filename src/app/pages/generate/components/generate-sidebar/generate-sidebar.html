@@ -30,7 +30,7 @@ transition-all ease-in-out duration-500">
       class="w-full cursor-pointer flex items-center p-3 rounded-lg text-sm font-medium transition-all"
       [ngClass]="[
         activeMode === 'doc-to-doc'
-          ? 'bg-blue-700/30 backdrop-blur-4xl text-blue-700 ring-1 ring-blue-200 shadow-sm z-10 backdrop-blur-3xl'
+          ? 'bg-blue-700/30 backdrop-blur-[3px] text-blue-700 ring-1 ring-blue-700 shadow-sm z-10 backdrop-blur-3xl'
           : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900',
         panelIcon === PanelLeftOpen ? 'hidden' : ''
       ]"
@@ -49,7 +49,7 @@ transition-all ease-in-out duration-500">
       class="cursor-pointer w-full flex items-center p-3 rounded-lg text-sm font-medium transition-all"
       [ngClass]="[
         activeMode === 'info-to-doc'
-          ? 'bg-blue-700/30 backdrop-blur-4xl text-blue-700 ring-1 ring-blue-200 shadow-sm z-10 backdrop-blur-2xl'
+          ? 'bg-blue-700/30 backdrop-blur-[3px] text-blue-700 ring-1 ring-blue-700 shadow-sm z-10 backdrop-blur-2xl'
           : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900',
         panelIcon === PanelLeftOpen ? 'hidden' : ''
       ]"
