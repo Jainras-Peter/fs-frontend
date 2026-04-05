@@ -9,6 +9,7 @@ import { StepFinalizeComponent } from './steps/step-finalize/step-finalize';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { DocGeneratorService } from '../../services/doc-generator.service';
+import {Shipment} from '../../../booking/services/shipment.service';
 
 @Component({
   selector: 'app-doc-to-doc',
@@ -42,8 +43,8 @@ export class DocToDocComponent {
     model: '',
     uploadedImage: null as string | null,
     mblNumber: '',
-    shipperObjects: [] as any[], // Store full objects {shipper_id, shipper_name}
-    selectedShippers: [] as string[], // Names for Step 2 display
+    shipmentsList: [] as Shipment[], // Store full objects {shipper_id, shipper_name}
+    linkedShipments: [] as Shipment[], // Names for Step 2 display
     hblList: [] as any[], // Generated HBLs for Step 3
     totalCount: 0 // From preview/hbl response, used in onConfirm()
   };
@@ -87,11 +88,9 @@ export class DocToDocComponent {
           // Let's check the Go model: ConvertMBLResponse { MBLNumber, ShipperList []ShipperDetail }
           // ShipperDetail has ShipperName.
 
-          if (res.shipper_list && Array.isArray(res.shipper_list)) {
+          if (res.shipments_list) {
             // Store full objects for ID lookup later
-            this.formData.shipperObjects = res.shipper_list;
-            // map mapping to names for Step 2 display
-            this.formData.selectedShippers = res.shipper_list.map((s: any) => s.shipper_name || s.shipper_id);
+            this.formData.shipmentsList = res.shipments_list;
           }
 
           this.goToStep(2);
@@ -113,12 +112,12 @@ export class DocToDocComponent {
       });
   }
 
-  onDetailsComplete(data: { mblNumber: string, localShippers: string[] }) {
+  onDetailsComplete(data: { mblNumber: string, selectedShipments: Shipment[] }) {
     this.formData.mblNumber = data.mblNumber;
-    // data.localShippers contains selected NAMES. We need to map back to IDs.
+    // data.linkedShipments contains selected NAMES. We need to map back to IDs.
 
-    const selectedIds = data.localShippers.map(name => {
-      const found = this.formData.shipperObjects.find(s => (s.shipper_name || s.shipper_id) === name);
+    const selectedIds = data.selectedShipments.map(name => {
+      const found = this.formData.shipmentsList.find(s => (s.shipment_id) === name.shipment_id);
       return found ? found.shipper_id : name;
     }).filter(id => id); // Remove nulls if any
 
@@ -156,7 +155,7 @@ export class DocToDocComponent {
   handleRefresh() {
     this.onDetailsComplete({
       mblNumber: this.formData.mblNumber,
-      localShippers: this.formData.selectedShippers
+      selectedShipments: this.formData.linkedShipments
     });
   }
 

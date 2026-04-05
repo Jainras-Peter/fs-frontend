@@ -64,7 +64,8 @@
         </app-step-upload>
 
         <app-step-details *ngIf="currentStep === 2" [initialMbl]="formData.mblNumber"
-                          [availableShippers]="formData.selectedShippers" (back)="onBack()" (complete)="onDetailsComplete($event)">
+                          [shipments]="formData.shipmentsList" (back)="onBack()"
+                          (complete)="onDetailsComplete($event)">
         </app-step-details>
 
         <app-step-finalize *ngIf="currentStep === 3" [previewData]="formData.hblList" [mblNumber]="formData.mblNumber"
