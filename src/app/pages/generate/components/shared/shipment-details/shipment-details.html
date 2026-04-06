@@ -1,0 +1,38 @@
+<div class="flex flex-col gap-4 w-full">
+  @for(shipment of shipments; track $index) {
+    <div class="flex flex-row gap-4 p-4 rounded-lg bg-white shadow-sm border-white
+    border border-solid hover:border-blue-700 transition-colors duration-300">
+      <input type="checkbox" class="size-4 rounded-lg mt-4"/>
+      <div class="flex flex-row gap-2">
+        <div class="flex flex-row items-center justify-center bg-blue-700 rounded-lg
+        p-4 w-max h-max">
+          <lucide-icon [img]="PackageIcon" class="size-5 text-slate-300"></lucide-icon>
+        </div>
+
+        <div class="flex flex-col">
+          <!--Shipment & Shipper ID-->
+          <span class="flex flex-row gap-0.5">
+            <p class="text-sm text-blue-700 font-semibold">{{shipment.shipment_id}}</p>
+            <p class="text-sm text-gray-400">/</p>
+            <p class="text-sm text-gray-400">{{shipment.shipper_id}}</p>
+          </span>
+          <!--Goods Description-->
+          <p class="text-base text-slate-900 font-semibold">{{shipment.goods_description}}</p>
+          <!--Goods Details-->
+          <div class="flex flex-row gap-4 mt-4">
+            @for(load of loadDetails[$index]; track $index) {
+              <div class="space-y-1">
+                  <p class="text-gray-400 text-xs font-mono-doc uppercase">{{load.label}}</p>
+                  <span class="flex flex-row gap-1 items-center">
+                  <lucide-icon [img]="load.icon" class="size-4 text-gray-600"></lucide-icon>
+                    <p class="text-gray-600 text-xs font-bold">{{load.value}}</p>
+              </span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

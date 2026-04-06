@@ -1,0 +1,5 @@
+.dropdown-hover:hover {
+  background-color: rgb(17 71 230 / 0.25);
+  backdrop-filter: blur(4px);
+  border-radius: 8px;
+}
