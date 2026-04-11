@@ -47,10 +47,13 @@ export class ShipmentService {
     return this.http.delete<any>(`${this.apiUrl}/shipments/${id}`);
   }
 
-  syncBooking(mblNumber: string, shipmentId: string): Observable<any> {
+  syncBooking(mblNumber: string, shipmentId: string, carrierName: string, estimatedDeparture: string, estimatedArrival: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/syncBooking`, {
       mbl_number: mblNumber,
-      shipment_id: shipmentId
+      shipment_id: shipmentId,
+      carrier_name: carrierName,
+      estimated_departure: estimatedDeparture,
+      estimated_arrival: estimatedArrival
     });
   }
 }

@@ -45,6 +45,9 @@ export class ShipmentComponent implements OnInit {
   displaySyncPopup = false;
   currentSyncShipment: Shipment = this.getEmptyShipment();
   syncMblNumber = '';
+  syncCarrierName = '';
+  syncEstimatedDeparture = '';
+  syncEstimatedArrival = '';
   isMblSynced = false;
 
   ngOnInit() {
@@ -120,6 +123,27 @@ export class ShipmentComponent implements OnInit {
   }
 
   saveShipment() {
+    // Validate required fields
+    if (!this.currentShipment.shipper_id) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Validation Error',
+        detail: 'Please select a shipper.',
+        life: 3000
+      });
+      return;
+    }
+
+    if (!this.currentShipment.mode || this.currentShipment.mode === '') {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Validation Error',
+        detail: 'Please select a mode (FCL or LCL).',
+        life: 3000
+      });
+      return;
+    }
+
     if (this.popupMode === 'add') {
       this.shipmentService.createShipment(this.currentShipment).subscribe({
         next: () => {
@@ -190,11 +214,37 @@ export class ShipmentComponent implements OnInit {
   }
 
   confirmSync() {
-    if (!this.syncMblNumber || !this.currentSyncShipment.shipment_id) return;
+    if (!this.syncMblNumber || !this.currentSyncShipment.shipment_id) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Missing Fields',
+        detail: 'Please enter MBL number.',
+        life: 3000
+      });
+      return;
+    }
 
-    this.shipmentService.syncBooking(this.syncMblNumber, this.currentSyncShipment.shipment_id).subscribe({
+    // Validate that shipment has a mode set
+    if (!this.currentSyncShipment.mode || this.currentSyncShipment.mode === '') {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Invalid Shipment',
+        detail: 'Shipment mode (FCL/LCL) is not set. Please set the mode before syncing.',
+        life: 4000
+      });
+      return;
+    }
+
+    this.shipmentService.syncBooking(
+      this.syncMblNumber,
+      this.currentSyncShipment.shipment_id,
+      this.syncCarrierName,
+      this.syncEstimatedDeparture,
+      this.syncEstimatedArrival
+    ).subscribe({
       next: () => {
         this.displaySyncPopup = false;
+        this.resetSyncFields();
         this.loadShipments();
         this.messageService.add({
           severity: 'success',
@@ -212,5 +262,13 @@ export class ShipmentComponent implements OnInit {
         });
       }
     });
+  }
+
+  resetSyncFields() {
+    this.syncMblNumber = '';
+    this.syncCarrierName = '';
+    this.syncEstimatedDeparture = '';
+    this.syncEstimatedArrival = '';
+    this.isMblSynced = false;
   }
 }

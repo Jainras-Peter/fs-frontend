@@ -107,7 +107,7 @@
                 <input pInputText [value]="currentShipment.shipment_id || 'Auto generated on save'" disabled class="w-full bg-gray-100 text-gray-600" />
             </div>
             <div class="flex flex-col gap-2 w-1/2">
-                <label class="text-sm font-medium text-gray-700">Shipper</label>
+                <label class="text-sm font-medium text-gray-700">Shipper <span class="text-red-500">*</span></label>
                 <select name="shipper_id" [(ngModel)]="currentShipment.shipper_id" class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none">
                     <option value="" disabled>Select shipper</option>
                     <option *ngFor="let shipper of shippers" [value]="shipper.shipper_id">
@@ -119,7 +119,7 @@
 
         <div class="flex gap-4">
             <div class="flex flex-col gap-2 w-1/2">
-                <label class="text-sm font-medium text-gray-700">Mode</label>
+                <label class="text-sm font-medium text-gray-700">Mode <span class="text-red-500">*</span></label>
                 <select name="mode" [(ngModel)]="currentShipment.mode" class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none">
                     <option value="" disabled>Select mode</option>
                     <option value="LCL">LCL</option>
@@ -195,55 +195,131 @@
     <ng-template pTemplate="footer">
         <div class="flex justify-end gap-2 mt-4">
             <p-button label="Cancel" severity="secondary" outlined (click)="displayPopup = false"></p-button>
-            <p-button [label]="popupMode === 'add' ? 'Add Shipment' : 'Update Shipment'" (click)="saveShipment()"></p-button>
+            <p-button 
+                [label]="popupMode === 'add' ? 'Add Shipment' : 'Update Shipment'" 
+                (click)="saveShipment()"
+                [disabled]="!currentShipment.shipper_id || !currentShipment.mode">
+            </p-button>
         </div>
     </ng-template>
 </p-dialog>
 
 <!-- Sync Booking Dialog (Shipment Details) -->
-<p-dialog header="Shipment Details" 
+<p-dialog header="Shipment Details & MBL Sync" 
           [(visible)]="displaySyncPopup" 
           [modal]="true" 
-          [style]="{ width: '40vw' }" 
+          [style]="{ width: '50vw' }" 
           [draggable]="false" 
           [resizable]="false">
           
-    <div class="flex flex-col gap-6 py-4">
-        <div class="text-gray-500 text-sm">ID: {{currentSyncShipment.shipment_id}}</div>
-        
-        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg border border-gray-100">
-            <div>
-                <div class="text-xs text-gray-500 uppercase font-semibold">Shipper</div>
-                <div class="font-medium text-gray-800">{{currentSyncShipment.shipper_id}}</div>
-            </div>
-            <div>
-                <div class="text-xs text-gray-500 uppercase font-semibold">Goods</div>
-                <div class="font-medium text-gray-800">{{currentSyncShipment.goods_description}}</div>
-            </div>
-            <div>
-                <div class="text-xs text-gray-500 uppercase font-semibold">Packages</div>
-                <div class="font-medium text-gray-800">{{currentSyncShipment.packages_count}} units</div>
-            </div>
-            <div>
-                <div class="text-xs text-gray-500 uppercase font-semibold">Weight / Volume</div>
-                <div class="font-medium text-gray-800">{{currentSyncShipment.gross_weight}}kg / {{currentSyncShipment.volume}}m³</div>
-            </div>
-            <div>
-                <div class="text-xs text-gray-500 uppercase font-semibold">Route</div>
-                <div class="font-medium text-gray-800">{{currentSyncShipment.origin}} → {{currentSyncShipment.destination}}</div>
+    <div class="flex flex-col gap-6 py-4 max-h-[70vh] overflow-y-auto px-2">
+        <!-- Shipment Info -->
+        <div>
+            <div class="text-gray-500 text-sm mb-4">ID: {{currentSyncShipment.shipment_id}}</div>
+            
+            <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg border border-gray-100">
+                <div>
+                    <div class="text-xs text-gray-500 uppercase font-semibold">Shipper</div>
+                    <div class="font-medium text-gray-800">{{currentSyncShipment.shipper_id}}</div>
+                </div>
+                <div>
+                    <div class="text-xs text-gray-500 uppercase font-semibold">Mode</div>
+                    <div class="font-medium" [ngClass]="{'text-blue-600': currentSyncShipment.mode === 'FCL', 'text-green-600': currentSyncShipment.mode === 'LCL'}">
+                        {{currentSyncShipment.mode || '-'}}
+                    </div>
+                </div>
+                <div>
+                    <div class="text-xs text-gray-500 uppercase font-semibold">Goods</div>
+                    <div class="font-medium text-gray-800">{{currentSyncShipment.goods_description}}</div>
+                </div>
+                <div>
+                    <div class="text-xs text-gray-500 uppercase font-semibold">Packages</div>
+                    <div class="font-medium text-gray-800">{{currentSyncShipment.packages_count}} units</div>
+                </div>
+                <div>
+                    <div class="text-xs text-gray-500 uppercase font-semibold">Weight / Volume</div>
+                    <div class="font-medium text-gray-800">{{currentSyncShipment.gross_weight}}kg / {{currentSyncShipment.volume}}m³</div>
+                </div>
+                <div>
+                    <div class="text-xs text-gray-500 uppercase font-semibold">Route</div>
+                    <div class="font-medium text-gray-800">{{currentSyncShipment.origin}} → {{currentSyncShipment.destination}}</div>
+                </div>
             </div>
         </div>
 
-        <div class="border border-blue-100 rounded-lg p-5 bg-blue-50/50 mt-2">
-            <div class="flex items-center gap-2 mb-4 text-blue-800 font-semibold">
-                <i class="pi pi-link"></i> Confirm Booking
+        <!-- Booking Details Form -->
+        <form #syncForm="ngForm">
+            <div class="border border-blue-100 rounded-lg p-5 bg-blue-50/50">
+                <div class="flex items-center gap-2 mb-4 text-blue-800 font-semibold">
+                    <i class="pi pi-link"></i> Confirm Booking & Carrier Details
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <!-- MBL Number -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium text-blue-900">Master Bill of Lading (MBL) Number <span class="text-red-500">*</span></label>
+                        <div class="flex gap-3 relative">
+                            <span class="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 font-semibold mt-0.5">#</span>
+                            <input pInputText 
+                                   name="mbl_number" 
+                                   [(ngModel)]="syncMblNumber" 
+                                   [disabled]="isMblSynced" 
+                                   placeholder="MBL-IN-2024-..." 
+                                   class="w-full pl-8 border-blue-200 focus:border-blue-400 focus:ring-blue-100"
+                                   [ngClass]="{'bg-gray-100 text-gray-500 font-semibold cursor-not-allowed': isMblSynced}" />
+                        </div>
+                    </div>
+
+                    <!-- Carrier Name -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium text-blue-900">Carrier Name</label>
+                        <input pInputText 
+                               name="carrier_name" 
+                               [(ngModel)]="syncCarrierName" 
+                               [disabled]="isMblSynced" 
+                               placeholder="e.g. Maersk, MSC, CMA CGM"
+                               class="w-full"
+                               [ngClass]="{'bg-gray-100 text-gray-500 cursor-not-allowed': isMblSynced}" />
+                    </div>
+
+                    <!-- Departure & Arrival Dates -->
+                    <div class="flex gap-4">
+                        <div class="flex flex-col gap-2 w-1/2">
+                            <label class="text-sm font-medium text-blue-900">Est. Departure Date</label>
+                            <input type="date" 
+                                   name="estimated_departure" 
+                                   [(ngModel)]="syncEstimatedDeparture" 
+                                   [disabled]="isMblSynced"
+                                   class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                   [ngClass]="{'bg-gray-100 text-gray-500 cursor-not-allowed': isMblSynced}" />
+                        </div>
+                        <div class="flex flex-col gap-2 w-1/2">
+                            <label class="text-sm font-medium text-blue-900">Est. Arrival Date</label>
+                            <input type="date" 
+                                   name="estimated_arrival" 
+                                   [(ngModel)]="syncEstimatedArrival" 
+                                   [disabled]="isMblSynced"
+                                   class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                                   [ngClass]="{'bg-gray-100 text-gray-500 cursor-not-allowed': isMblSynced}" />
+                        </div>
+                    </div>
+                </div>
             </div>
-            <label class="text-sm font-medium text-blue-900 block mb-2">Master Bill of Lading (MBL) Number</label>
-            <div class="flex gap-3 relative">
-                <span class="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400 font-semibold mt-0.5">#</span>
-                <input pInputText [(ngModel)]="syncMblNumber" [disabled]="isMblSynced" placeholder="MBL-IN-2024-..." class="w-full pl-8 border-blue-200 focus:border-blue-400 focus:ring-blue-100" [ngClass]="{'bg-gray-100 text-gray-500 font-semibold cursor-not-allowed': isMblSynced}" style="padding-left: 2rem" />
-                <p-button *ngIf="!isMblSynced" label="Confirm" (click)="confirmSync()" [disabled]="!syncMblNumber"></p-button>
-            </div>
-        </div>
+        </form>
     </div>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-between gap-2 mt-4">
+            <p-button label="Cancel" severity="secondary" outlined (click)="displaySyncPopup = false"></p-button>
+            <p-button *ngIf="!isMblSynced" 
+                      label="Confirm & Sync" 
+                      (click)="confirmSync()" 
+                      [disabled]="!syncMblNumber">
+            </p-button>
+            <span *ngIf="isMblSynced" class="text-green-600 font-semibold text-sm flex items-center gap-2">
+                <i class="pi pi-check-circle"></i> Synced
+            </span>
+        </div>
+    </ng-template>
 </p-dialog>
+
