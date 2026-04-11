@@ -8,12 +8,16 @@
     </div>
 
     <!-- Toolbar -->
-    <div class="flex justify-end mb-6">
+    <div class="flex justify-end mb-6 gap-2">
+        <p-button label="Create Booking" icon="pi pi-briefcase" class="p-button-success" (click)="openCreateBookingPopup()"></p-button>
         <p-button label="Add Shipment" icon="pi pi-plus" (click)="openAddPopup()"></p-button>
     </div>
 
     <!-- Table -->
-    <div class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm">
+    <div class="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm">
+        <div *ngIf="isLoading" class="absolute inset-0 z-20 flex items-center justify-center bg-white/80 backdrop-blur-sm">
+            <i class="pi pi-spin pi-spinner text-3xl text-blue-600"></i>
+        </div>
         <p-table 
             [value]="shipments" 
             [tableStyle]="{ 'min-width': '60rem' }"
@@ -41,7 +45,8 @@
                 <tr>
                     <td class="text-gray-500 font-medium">{{ri + 1}}</td>
                     <!-- Clickable shipment ID to open sync popup -->
-                    <td class="font-semibold text-blue-600 cursor-pointer hover:underline" (click)="openSyncPopup(shipment)">
+                    <td class="font-semibold  cursor-pointer hover:underline">
+                         <!-- // (click)="openSyncPopup(shipment) add this to open booking popup using id -->
                         {{shipment.shipment_id}}
                     </td>
                     <td>{{shipment.shipper_id}}</td>
@@ -200,6 +205,86 @@
                 (click)="saveShipment()"
                 [disabled]="!currentShipment.shipper_id || !currentShipment.mode">
             </p-button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<!-- Create Booking Dialog -->
+<p-dialog header="Create Booking" 
+          [(visible)]="displayCreateBookingPopup" 
+          [modal]="true" 
+          [style]="{ width: '50vw' }" 
+          [draggable]="false" 
+          [resizable]="false">
+    <form #bookingForm="ngForm">
+        <div class="flex flex-col gap-4 py-4 max-h-[70vh] overflow-y-auto px-2">
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-medium text-gray-700">MBL Number <span class="text-red-500">*</span></label>
+                <input pInputText name="mbl_number" [(ngModel)]="selectedBookingMblNumber" placeholder="MBL-IN-2024-..." class="w-full" />
+            </div>
+
+            <div class="flex gap-4">
+                <div class="flex flex-col gap-2 w-1/2">
+                    <label class="text-sm font-medium text-gray-700">Mode <span class="text-red-500">*</span></label>
+                    <select name="booking_mode" [(ngModel)]="selectedBookingMode" (ngModelChange)="onBookingModeChange($event)" class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none">
+                        <option value="" disabled>Select mode</option>
+                        <option value="LCL">LCL</option>
+                        <option value="FCL">FCL</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-medium text-gray-700">Select Shipment(s)</label>
+                <ng-container *ngIf="selectedBookingMode === 'FCL'">
+                    <select name="selected_shipment_id" [(ngModel)]="selectedBookingShipmentId" class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none">
+                        <option value="" disabled>Select one FCL shipment</option>
+                        <option *ngFor="let shipment of getAvailableShipmentsByMode('FCL')" [value]="shipment.shipment_id">
+                            {{shipment.shipment_id}} - {{shipment.shipper_id}}
+                        </option>
+                    </select>
+                </ng-container>
+                <ng-container *ngIf="selectedBookingMode === 'LCL'">
+                    <div class="grid gap-2 max-h-56 overflow-y-auto rounded border border-gray-300 p-3 bg-white">
+                        <label *ngFor="let shipment of getAvailableShipmentsByMode('LCL')" class="flex items-center gap-3 rounded px-2 py-2 hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox"
+                                   [value]="shipment.shipment_id"
+                                   [checked]="selectedBookingShipmentIds.includes(shipment.shipment_id)"
+                                   (change)="toggleBookingShipmentSelection(shipment.shipment_id, $event.target.checked)"
+                                   class="h-4 w-4 text-blue-600 border-gray-300 rounded" />
+                            <span class="text-sm font-medium">{{shipment.shipment_id}} - {{shipment.shipper_id}}</span>
+                        </label>
+                        <div *ngIf="getAvailableShipmentsByMode('LCL').length === 0" class="text-sm text-gray-500">No unsynced LCL shipments available.</div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">Select up to 5 shipments.</div>
+                </ng-container>
+                <ng-container *ngIf="selectedBookingMode && getAvailableShipmentsByMode(selectedBookingMode).length === 0">
+                    <div class="text-sm text-red-600">No unsynced {{selectedBookingMode}} shipments available.</div>
+                </ng-container>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-medium text-gray-700">Carrier Name</label>
+                <input pInputText name="carrier_name" [(ngModel)]="selectedBookingCarrierName" placeholder="e.g. Maersk, MSC, CMA CGM" class="w-full" />
+            </div>
+
+            <div class="flex gap-4">
+                <div class="flex flex-col gap-2 w-1/2">
+                    <label class="text-sm font-medium text-gray-700">Est. Departure Date</label>
+                    <input type="date" name="estimated_departure" [(ngModel)]="selectedBookingEstimatedDeparture" class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
+                </div>
+                <div class="flex flex-col gap-2 w-1/2">
+                    <label class="text-sm font-medium text-gray-700">Est. Arrival Date</label>
+                    <input type="date" name="estimated_arrival" [(ngModel)]="selectedBookingEstimatedArrival" class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end gap-2 mt-4">
+            <p-button label="Cancel" severity="secondary" outlined (click)="displayCreateBookingPopup = false"></p-button>
+            <p-button label="Confirm Booking" severity="success" (click)="createBooking()" [disabled]="!selectedBookingMblNumber || !selectedBookingMode || (selectedBookingMode === 'FCL' ? !selectedBookingShipmentId : selectedBookingShipmentIds.length === 0 || selectedBookingShipmentIds.length > 5)"></p-button>
         </div>
     </ng-template>
 </p-dialog>

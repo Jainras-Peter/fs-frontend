@@ -13,7 +13,10 @@
     </div>
 
     <!-- Table -->
-    <div class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm">
+    <div class="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm">
+        <div *ngIf="isLoading" class="absolute inset-0 z-20 flex items-center justify-center bg-white/80 backdrop-blur-sm">
+            <i class="pi pi-spin pi-spinner text-3xl text-blue-600"></i>
+        </div>
         <p-table 
             [value]="shippers" 
             [tableStyle]="{ 'min-width': '50rem' }"

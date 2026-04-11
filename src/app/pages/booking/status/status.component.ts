@@ -31,6 +31,7 @@ export class StatusComponent implements OnInit {
   private messageService = inject(MessageService);
 
   statuses: StatusDetail[] = [];
+  isLoading = false;
   
   // Edit Popup state
   displayPopup = false;
@@ -48,13 +49,16 @@ export class StatusComponent implements OnInit {
   }
 
   loadStatuses() {
+    this.isLoading = true;
     this.bookingService.getStatusDetails().subscribe({
       next: (data) => {
         this.statuses = Array.isArray(data) ? [...data] : [];
+        this.isLoading = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
         this.statuses = [];
+        this.isLoading = false;
         console.error('Failed to load status details', err);
         this.cdr.detectChanges();
       }

@@ -21,6 +21,7 @@ export class ShipperComponent implements OnInit {
   private messageService = inject(MessageService);
 
   shippers: Shipper[] = [];
+  isLoading = false;
   
   // Popup state
   displayPopup = false;
@@ -32,13 +33,16 @@ export class ShipperComponent implements OnInit {
   }
 
   loadShippers() {
+    this.isLoading = true;
     this.bookingService.getShipperList().subscribe({
       next: (data) => {
         this.shippers = Array.isArray(data) ? [...data] : [];
+        this.isLoading = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
         this.shippers = [];
+        this.isLoading = false;
         console.error('Failed to load shippers', err);
         this.cdr.detectChanges();
       }

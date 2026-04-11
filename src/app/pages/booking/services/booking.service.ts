@@ -41,6 +41,17 @@ export class BookingService {
   updateStatus(id: string, status: string): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/updatestatus/${id}`, { status });
   }
+
+  createBooking(mblNumber: string, mode: string, shipmentIds: string[], carrierName: string, estimatedDeparture: string, estimatedArrival: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/syncBooking`, {
+      mbl_number: mblNumber,
+      mode,
+      shipment_ids: shipmentIds,
+      carrier_name: carrierName,
+      estimated_departure: estimatedDeparture,
+      estimated_arrival: estimatedArrival
+    });
+  }
 }
 
 export interface StatusDetail {

@@ -8,7 +8,10 @@
     </div>
 
     <!-- Table -->
-    <div class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm">
+    <div class="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm">
+        <div *ngIf="isLoading" class="absolute inset-0 z-20 flex items-center justify-center bg-white/80 backdrop-blur-sm">
+            <i class="pi pi-spin pi-spinner text-3xl text-blue-600"></i>
+        </div>
         <p-table 
             [value]="statuses" 
             [tableStyle]="{ 'min-width': '60rem' }"
@@ -22,6 +25,7 @@
                 <tr>
                     <th class="w-16">No</th>
                     <th>MBL Number</th>
+                    <th>Mode</th>
                     <th>Shipment List</th>
                     <th>Created At</th>
                     <th class="text-center">Status</th>
@@ -32,6 +36,7 @@
                 <tr>
                     <td class="text-gray-500 font-medium">{{ri + 1}}</td>
                     <td class="font-semibold text-blue-600">{{status.mbl_number}}</td>
+                    <td>{{status.mode || "-"}}</td>
                     <td>
                         <span *ngIf="status.shipment_ids && status.shipment_ids.length > 0">
                             {{ status.shipment_ids.join(', ') }}
