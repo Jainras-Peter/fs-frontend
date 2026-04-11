@@ -10,6 +10,7 @@ export const routes: Routes = [
     { path: 'generate/result', component: DocumentGenerationResultComponent, canActivate: [authGuard] },
     { path: 'generate', component: GenerateComponent, canActivate: [authGuard] },
     { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
+    { path: 'profile', loadComponent: () => import('./User/profile/profile').then(m => m.Profile), canActivate: [authGuard] },
     { 
         path: 'booking', 
         canActivate: [authGuard],

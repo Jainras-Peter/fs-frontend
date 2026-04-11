@@ -1,0 +1,11 @@
+.top-card {
+  border-radius: 0.75rem;
+}
+
+.profile-field {
+  min-height: 3rem;
+}
+
+button.p-button-success {
+  min-width: 10rem;
+}

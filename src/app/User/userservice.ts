@@ -26,6 +26,9 @@ export class Userservice {
       tap(res => {
         if (res && res.token) {
           localStorage.setItem('fwd_token', res.token);
+          if (res.username) {
+            localStorage.setItem('fwd_username', res.username);
+          }
           this.loggedInSubject.next(true);
         }
       })
@@ -43,8 +46,19 @@ export class Userservice {
     });
   }
 
+  getForwarderDetails(username: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/getforwarderdetails`, {
+      params: { username }
+    });
+  }
+
+  updateForwarderDetails(username: string, data: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/updateforwarderdetails/${encodeURIComponent(username)}`, data);
+  }
+
   private clearSession() {
     localStorage.removeItem('fwd_token');
+    localStorage.removeItem('fwd_username');
     this.loggedInSubject.next(false);
     this.router.navigate(['/login']);
   }

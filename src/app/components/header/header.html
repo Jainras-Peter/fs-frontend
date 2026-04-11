@@ -11,12 +11,14 @@
       <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
     </nav>
     <div class="nav-actions">
-      @if (userService.isLoggedIn$ | async) {
+      <ng-container *ngIf="userService.isLoggedIn$ | async; else loggedOut">
+        <a class="nav-login" routerLink="/profile">Profile</a>
         <button pButton label="Log out" class="p-button-outlined p-button-secondary" (click)="onLogout()"></button>
-      } @else {
+      </ng-container>
+      <ng-template #loggedOut>
         <a class="nav-login" routerLink="/login">Log in</a>
         <button pButton label="Sign up" class="nav-signup" routerLink="/signup"></button>
-      }
+      </ng-template>
     </div>
   </div>
 </header>
