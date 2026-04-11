@@ -6,6 +6,8 @@ export interface Shipment {
   id?: string;
   shipment_id: string;
   shipper_id: string;
+  mode: string;
+  cargo_type: string;
   goods_description: string;
   packages_count: number;
   gross_weight: number;
@@ -13,6 +15,10 @@ export interface Shipment {
   volume: number;
   marks_and_numbers: string;
   measurement: string;
+  origin: string;
+  destination: string;
+  desired_delivery_date: string;
+  special_requirements: string;
   mbl_number?: string;
   status?: string;
 }

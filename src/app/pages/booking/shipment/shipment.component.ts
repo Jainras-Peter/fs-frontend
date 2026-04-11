@@ -8,6 +8,7 @@ import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { BookingService, Shipper } from '../services/booking.service';
 import { ShipmentService, Shipment } from '../services/shipment.service';
 
 @Component({
@@ -28,10 +29,12 @@ import { ShipmentService, Shipment } from '../services/shipment.service';
 })
 export class ShipmentComponent implements OnInit {
   private shipmentService = inject(ShipmentService);
+  private bookingService = inject(BookingService);
   private cdr = inject(ChangeDetectorRef);
   private messageService = inject(MessageService);
 
   shipments: Shipment[] = [];
+  shippers: Shipper[] = [];
   
   // Add/Edit Popup state
   displayPopup = false;
@@ -45,7 +48,22 @@ export class ShipmentComponent implements OnInit {
   isMblSynced = false;
 
   ngOnInit() {
+    this.loadShippers();
     this.loadShipments();
+  }
+
+  loadShippers() {
+    this.bookingService.getShipperList().subscribe({
+      next: (data) => {
+        this.shippers = Array.isArray(data) ? [...data] : [];
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.shippers = [];
+        console.error('Failed to load shippers', err);
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   loadShipments() {
@@ -66,13 +84,19 @@ export class ShipmentComponent implements OnInit {
     return {
       shipment_id: '',
       shipper_id: '',
+      mode: '',
+      cargo_type: '',
       goods_description: '',
       packages_count: 0,
       gross_weight: 0,
       net_weight: 0,
       volume: 0,
       marks_and_numbers: '',
-      measurement: ''
+      measurement: '',
+      origin: '',
+      destination: '',
+      desired_delivery_date: '',
+      special_requirements: ''
     };
   }
 
