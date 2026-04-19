@@ -6,29 +6,35 @@
           [draggable]="false" 
           [resizable]="false">
           
-    <div class="flex flex-col gap-4 py-4">
+    <p-toast position="top-right"></p-toast>
+    
+    <form [formGroup]="shipperForm" class="flex flex-col gap-4 py-4">
         <div class="flex gap-4">
             <div class="flex flex-col gap-2 w-1/2">
-                <label for="shipperId" class="text-sm font-medium text-gray-700">Shipper ID</label>
-                <input pInputText id="shipperId" [(ngModel)]="shipper.shipper_id" placeholder="e.g. SHP005" class="w-full" />
+                <label for="shipperId" class="text-sm font-medium text-gray-700">Shipper ID <span class="text-red-600">*</span></label>
+                <input pInputText id="shipperId" formControlName="shipper_id" placeholder="e.g. SHP005" class="w-full" />
+                <p *ngIf="shipperForm.get('shipper_id')?.touched && shipperForm.get('shipper_id')?.invalid" class="text-xs text-red-600">Shipper ID is required.</p>
             </div>
             
             <div class="flex flex-col gap-2 w-1/2">
-                <label for="contact" class="text-sm font-medium text-gray-700">Contact</label>
-                <input pInputText id="contact" [(ngModel)]="shipper.shipper_contact" placeholder="+91-..." class="w-full" />
+                <label for="contact" class="text-sm font-medium text-gray-700">Contact <span class="text-red-600">*</span></label>
+                <input pInputText id="contact" formControlName="shipper_contact" placeholder="+91-..." class="w-full" />
+                <p *ngIf="shipperForm.get('shipper_contact')?.touched && shipperForm.get('shipper_contact')?.invalid" class="text-xs text-red-600">Contact is required.</p>
             </div>
         </div>
 
         <div class="flex flex-col gap-2">
-            <label for="shipperName" class="text-sm font-medium text-gray-700">Shipper Name</label>
-            <input pInputText id="shipperName" [(ngModel)]="shipper.shipper_name" placeholder="Company Name" class="w-full" />
+            <label for="shipperName" class="text-sm font-medium text-gray-700">Shipper Name <span class="text-red-600">*</span></label>
+            <input pInputText id="shipperName" formControlName="shipper_name" placeholder="Company Name" class="w-full" />
+            <p *ngIf="shipperForm.get('shipper_name')?.touched && shipperForm.get('shipper_name')?.invalid" class="text-xs text-red-600">Shipper Name is required.</p>
         </div>
 
         <div class="flex flex-col gap-2">
-            <label for="address" class="text-sm font-medium text-gray-700">Address</label>
-            <textarea rows="3" pInputText id="address" [(ngModel)]="shipper.shipper_address" placeholder="Full Address" class="w-full resize-none"></textarea>
+            <label for="address" class="text-sm font-medium text-gray-700">Address <span class="text-red-600">*</span></label>
+            <textarea rows="3" pInputText id="address" formControlName="shipper_address" placeholder="Full Address" class="w-full resize-none"></textarea>
+            <p *ngIf="shipperForm.get('shipper_address')?.touched && shipperForm.get('shipper_address')?.invalid" class="text-xs text-red-600">Address is required.</p>
         </div>
-    </div>
+    </form>
 
     <ng-template pTemplate="footer">
         <div class="flex justify-end gap-2 mt-4">

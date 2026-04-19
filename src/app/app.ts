@@ -20,7 +20,7 @@ export class AppComponent {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
-      this.showFooter = !['/generate', '/dashboard', '/booking'].some(path =>
+      this.showFooter = !['/generate', '/dashboard', '/booking', '/profile'].some(path =>
         event.urlAfterRedirects.startsWith(path)
       );
     });
