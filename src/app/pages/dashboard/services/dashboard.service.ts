@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_CONFIG } from '../../../core/config/api.config';
 
 export interface DashboardDocument {
   id: string;
@@ -22,7 +23,7 @@ export interface DashboardDetails {
   providedIn: 'root'
 })
 export class DashboardService {
-  private apiUrl = 'http://localhost:5000/api/dashboard';
+  private apiUrl = API_CONFIG.dashboard;
 
   constructor(private http: HttpClient) { }
 

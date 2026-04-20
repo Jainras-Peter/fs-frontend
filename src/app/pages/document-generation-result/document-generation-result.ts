@@ -12,6 +12,7 @@ import {
   FolderArchive,
   AlertTriangle
 } from 'lucide-angular';
+import { API_CONFIG } from '../../core/config/api.config';
 
 export interface UploadedFileRef {
   filename: string;
@@ -31,7 +32,7 @@ export class DocumentGenerationResultComponent {
   private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
 
-  private readonly apiBase = 'http://localhost:5000/api/v1';
+  private readonly apiBase = API_CONFIG.v1;
 
   readonly Check = Check;
   readonly ChevronRight = ChevronRight;

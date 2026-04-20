@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { API_CONFIG } from '../core/config/api.config';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,7 @@ import { Router } from '@angular/router';
 export class Userservice {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private apiUrl = 'http://localhost:5000/api/users';
+  private apiUrl = API_CONFIG.users;
 
   private loggedInSubject = new BehaviorSubject<boolean>(this.hasToken());
   public isLoggedIn$ = this.loggedInSubject.asObservable();

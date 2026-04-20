@@ -9,6 +9,7 @@ import { StepFinalizeComponent } from './steps/step-finalize/step-finalize';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { DocGeneratorService } from '../../services/doc-generator.service';
+import { API_CONFIG } from '../../../../core/config/api.config';
 
 @Component({
   selector: 'app-doc-to-doc',
@@ -71,7 +72,7 @@ export class DocToDocComponent {
     formData.append('to_doc', 'hbl');
     formData.append('mode', data.mode);
 
-    this.http.post<any>('http://localhost:5000/api/v1/convert/mbl', formData)
+    this.http.post<any>(`${API_CONFIG.v1}/convert/mbl`, formData)
       .subscribe({
         next: (res) => {
           this.isLoading = false;
@@ -124,7 +125,7 @@ export class DocToDocComponent {
       shipper_list: selectedIds
     };
 
-    this.http.post<any>('http://localhost:5000/api/v1/preview/hbl', payload)
+    this.http.post<any>(`${API_CONFIG.v1}/preview/hbl`, payload)
       .subscribe({
         next: (res) => {
           this.isLoading = false;

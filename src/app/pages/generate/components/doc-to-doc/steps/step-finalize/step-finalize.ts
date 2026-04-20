@@ -4,6 +4,7 @@ import { LucideAngularModule, ArrowLeft, Edit3, Check, ChevronLeft, ChevronRight
 import { HblPreviewFullComponent } from './hbl-preview-full/hbl-preview-full';
 import { HttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
+import { API_CONFIG } from '../../../../../../core/config/api.config';
 
 @Component({
   selector: 'app-step-finalize',
@@ -77,7 +78,7 @@ export class StepFinalizeComponent {
     }
 
     this.isLoading = true;
-    this.http.put(`http://localhost:5000/api/v1/hbl/${current.sea_waybill_no}`, current).subscribe({
+    this.http.put(`${API_CONFIG.v1}/hbl/${current.sea_waybill_no}`, current).subscribe({
       next: () => {
         this.isLoading = false;
         this.isEditing = false;

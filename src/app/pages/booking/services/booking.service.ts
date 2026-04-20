@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_CONFIG } from '../../../core/config/api.config';
 
 export interface Shipper {
   id?: string;
@@ -15,8 +16,7 @@ export interface Shipper {
 })
 export class BookingService {
   private http = inject(HttpClient);
-  // Defaulting to process.env.apiURL or localhost:5000 if not available
-  private apiUrl = 'http://localhost:5000/api/booking';
+  private apiUrl = API_CONFIG.booking;
 
   getShipperList(): Observable<Shipper[]> {
     return this.http.get<Shipper[]>(`${this.apiUrl}/shipperlist`);
