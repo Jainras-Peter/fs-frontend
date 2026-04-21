@@ -1,0 +1,214 @@
+<div class="w-full text-sm text-slate-800 leading-tight bg-white border border-slate-300 shadow-sm p-4 mt-6">
+  <!-- Title -->
+  <div class="text-center mb-6">
+    <h1 class="text-2xl font-bold tracking-widest text-black">BILL OF LADING</h1>
+  </div>
+
+  <div class="grid grid-cols-2 border border-slate-300">
+    <!-- Left Column -->
+    <div class="col-span-1 border-r border-slate-300 flex flex-col">
+      <!-- Shipper -->
+      <div class="p-3 border-b border-slate-300 flex flex-col">
+        <label class="text-xs font-semibold text-slate-500 mb-1">Shipper</label>
+        <textarea class="w-full h-24 p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 focus:ring-blue-100 outline-none resize-none transition-all"
+                  [ngModel]="data['shipper']" (ngModelChange)="updateField('shipper', $event)" placeholder="Enter shipper details..."></textarea>
+      </div>
+      <!-- Consignee -->
+      <div class="p-3 border-b border-slate-300 flex flex-col">
+        <label class="text-xs font-semibold text-slate-500 mb-1">Consignee</label>
+        <textarea class="w-full h-24 p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 focus:ring-blue-100 outline-none resize-none transition-all"
+                  [ngModel]="data['consignee']" (ngModelChange)="updateField('consignee', $event)" placeholder="Enter consignee details..."></textarea>
+      </div>
+      <!-- Notify Party -->
+      <div class="p-3 flex flex-col">
+        <label class="text-xs font-semibold text-slate-500 mb-1">Notify Party (If not Consignee)</label>
+        <textarea class="w-full h-24 p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 focus:ring-blue-100 outline-none resize-none transition-all"
+                  [ngModel]="data['notify_party']" (ngModelChange)="updateField('notify_party', $event)" placeholder="Enter notify party..."></textarea>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="col-span-1 flex flex-col">
+      <!-- Top Refs -->
+      <div class="grid grid-cols-2 border-b border-slate-300">
+        <div class="p-3 border-r border-slate-300 flex flex-col">
+          <label class="text-xs font-semibold text-slate-500 mb-1">Shipper's Reference</label>
+          <input type="text" class="w-full p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 focus:ring-blue-100 outline-none transition-all"
+                 [ngModel]="data['shipper_reference']" (ngModelChange)="updateField('shipper_reference', $event)" placeholder="Reference ID"/>
+        </div>
+        <div class="p-3 flex flex-col">
+          <label class="text-xs font-semibold text-slate-500 mb-1">Bill of Lading Number</label>
+          <input type="text" class="w-full p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 focus:ring-blue-100 outline-none transition-all"
+                 [ngModel]="data['bill_of_lading_number']" (ngModelChange)="updateField('bill_of_lading_number', $event)" placeholder="BL Number"/>
+        </div>
+      </div>
+
+      <!-- Carrier Refs -->
+      <div class="p-3 border-b border-slate-300 flex flex-col">
+        <label class="text-xs font-semibold text-slate-500 mb-1">Carrier's Reference</label>
+        <input type="text" class="w-full p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 focus:ring-blue-100 outline-none transition-all"
+               [ngModel]="data['carrier_reference']" (ngModelChange)="updateField('carrier_reference', $event)" placeholder="Carrier Ref"/>
+      </div>
+
+      <!-- Consignment Ref -->
+      <div class="p-3 border-b border-slate-300 flex flex-col">
+        <label class="text-xs font-semibold text-slate-500 mb-1">Unique Consignment Reference</label>
+        <input type="text" class="w-full p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 focus:ring-blue-100 outline-none transition-all"
+               [ngModel]="data['unique_consignment_reference']" (ngModelChange)="updateField('unique_consignment_reference', $event)" placeholder="Consignment Ref"/>
+      </div>
+
+      <!-- Carrier Name -->
+      <div class="p-3 border-b border-slate-300 flex flex-col">
+        <label class="text-xs font-semibold text-slate-500 mb-1">Carrier Name</label>
+        <input type="text" class="w-full p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 focus:ring-blue-100 outline-none transition-all"
+               [ngModel]="data['carrier_name']" (ngModelChange)="updateField('carrier_name', $event)" placeholder="Carrier Name"/>
+      </div>
+
+      <!-- Additional Notify Party -->
+      <div class="p-3 flex flex-col flex-1">
+        <label class="text-xs font-semibold text-slate-500 mb-1">Additional Notify Party</label>
+        <textarea class="w-full flex-grow p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 focus:ring-blue-100 outline-none resize-none transition-all min-h-[100px]"
+                  [ngModel]="data['additional_notify_party']" (ngModelChange)="updateField('additional_notify_party', $event)" placeholder="Add party..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Routing Information Box -->
+  <div class="grid grid-cols-2 border border-slate-300 border-t-0">
+    <div class="col-span-1 grid grid-cols-2">
+      <div class="p-3 border-r border-b border-slate-300 flex flex-col">
+        <label class="text-xs font-semibold text-slate-500 mb-1">Pre-Carriage By</label>
+        <input type="text" class="w-full p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 outline-none transition-all"
+               [ngModel]="data['pre_carriage_by']" (ngModelChange)="updateField('pre_carriage_by', $event)" />
+      </div>
+      <div class="p-3 border-b border-slate-300 flex flex-col">
+        <label class="text-xs font-semibold text-slate-500 mb-1">Place of Receipt</label>
+        <input type="text" class="w-full p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 outline-none transition-all"
+               [ngModel]="data['place_of_receipt']" (ngModelChange)="updateField('place_of_receipt', $event)" />
+      </div>
+      
+      <div class="p-3 border-r border-b border-slate-300 flex flex-col">
+        <label class="text-xs font-semibold text-slate-500 mb-1">Vessel / Aircraft</label>
+        <input type="text" class="w-full p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 outline-none transition-all"
+               [ngModel]="data['vessel_aircraft']" (ngModelChange)="updateField('vessel_aircraft', $event)" />
+      </div>
+      
+      <div class="p-3 border-b border-slate-300 flex flex-col">
+         <label class="text-xs font-semibold text-slate-500 mb-1">Port of Loading</label>
+         <input type="text" class="w-full p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 outline-none transition-all"
+                [ngModel]="data['port_of_loading']" (ngModelChange)="updateField('port_of_loading', $event)" />
+      </div>
+
+      <div class="col-span-2 grid grid-cols-2 col-start-1 col-end-3">
+        <div class="p-3 border-r border-slate-300 flex flex-col">
+          <label class="text-xs font-semibold text-slate-500 mb-1">Port of Discharge</label>
+          <input type="text" class="w-full p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 outline-none transition-all"
+                 [ngModel]="data['port_of_discharge']" (ngModelChange)="updateField('port_of_discharge', $event)" />
+        </div>
+        <div class="p-3 flex flex-col">
+          <label class="text-xs font-semibold text-slate-500 mb-1">Place of Delivery</label>
+          <input type="text" class="w-full p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 outline-none transition-all"
+                 [ngModel]="data['place_of_delivery']" (ngModelChange)="updateField('place_of_delivery', $event)" />
+        </div>
+      </div>
+    </div>
+
+    <div class="col-span-1 flex flex-col">
+      <div class="p-3 border-b border-l border-slate-300 flex-grow flex flex-col">
+        <label class="text-xs font-semibold text-slate-500 mb-1">Additional Information</label>
+        <textarea class="w-full flex-grow p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 outline-none resize-none transition-all min-h-[140px]"
+                  [ngModel]="data['additional_information']" (ngModelChange)="updateField('additional_information', $event)"></textarea>
+      </div>
+      <div class="p-3 border-l border-slate-300 flex flex-col">
+        <label class="text-xs font-semibold text-slate-500 mb-1">Final Destination</label>
+        <input type="text" class="w-full p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 outline-none transition-all"
+               [ngModel]="data['final_destination']" (ngModelChange)="updateField('final_destination', $event)" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Goods Table -->
+  <div class="border border-slate-300 border-t-0 p-3 bg-slate-50 min-h-[200px] flex flex-col">
+     <label class="text-xs font-semibold text-slate-500 mb-2">Marks & Numbers | Kind & No of Packages | Description of Goods | Weight | Measurement</label>
+     <div class="grid grid-cols-12 gap-2 flex-grow">
+        <div class="col-span-2">
+           <textarea class="w-full h-full p-2 text-sm bg-white border border-slate-200 outline-none resize-none transition-all"
+                  [ngModel]="data['marks_and_numbers']" (ngModelChange)="updateField('marks_and_numbers', $event)" placeholder="Marks..."></textarea>
+        </div>
+        <div class="col-span-2">
+           <textarea class="w-full h-full p-2 text-sm bg-white border border-slate-200 outline-none resize-none transition-all"
+                  [ngModel]="data['kind_and_no_of_packages']" (ngModelChange)="updateField('kind_and_no_of_packages', $event)" placeholder="Packages..."></textarea>
+        </div>
+        <div class="col-span-4">
+           <textarea class="w-full h-full p-2 text-sm bg-white border border-slate-200 outline-none resize-none transition-all"
+                  [ngModel]="data['description_of_goods']" (ngModelChange)="updateField('description_of_goods', $event)" placeholder="Description..."></textarea>
+        </div>
+        <div class="col-span-2 flex flex-col gap-2">
+           <input type="text" class="w-full p-2 text-sm bg-white border border-slate-200 outline-none transition-all" placeholder="Net Wt" [ngModel]="data['net_weight']" (ngModelChange)="updateField('net_weight', $event)" />
+           <input type="text" class="w-full p-2 text-sm bg-white border border-slate-200 outline-none transition-all" placeholder="Gross Wt" [ngModel]="data['gross_weight']" (ngModelChange)="updateField('gross_weight', $event)" />
+        </div>
+        <div class="col-span-2">
+           <input type="text" class="w-full h-full p-2 text-sm bg-white border border-slate-200 outline-none transition-all" placeholder="Measurements (m³)" [ngModel]="data['measurements']" (ngModelChange)="updateField('measurements', $event)" />
+        </div>
+     </div>
+  </div>
+
+  <!-- Additional fields row -->
+  <div class="border border-slate-300 border-t-0 p-3 flex items-center gap-4">
+    <label class="text-xs font-semibold text-slate-500 whitespace-nowrap">Total No of Containers or other packages or units (in words)</label>
+    <input type="text" class="w-full p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 outline-none transition-all"
+           [ngModel]="data['total_no_of_containers']" (ngModelChange)="updateField('total_no_of_containers', $event)" />
+  </div>
+
+  <div class="grid grid-cols-5 border border-slate-300 border-t-0">
+    <div class="p-3 border-r border-slate-300">
+      <label class="text-xs font-semibold text-slate-500 mb-1">No. of original Bills</label>
+      <input type="text" class="w-full p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 outline-none transition-all"
+           [ngModel]="data['no_of_original_bills']" (ngModelChange)="updateField('no_of_original_bills', $event)" />
+    </div>
+    <div class="p-3 border-r border-slate-300">
+      <label class="text-xs font-semibold text-slate-500 mb-1">Incoterms</label>
+      <input type="text" class="w-full p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 outline-none transition-all"
+           [ngModel]="data['incoterms']" (ngModelChange)="updateField('incoterms', $event)" />
+    </div>
+    <div class="p-3 border-r border-slate-300">
+      <label class="text-xs font-semibold text-slate-500 mb-1">Payable at</label>
+      <input type="text" class="w-full p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 outline-none transition-all"
+           [ngModel]="data['payable_at']" (ngModelChange)="updateField('payable_at', $event)" />
+    </div>
+    <div class="p-3 border-r border-slate-300">
+      <label class="text-xs font-semibold text-slate-500 mb-1">Freight Charges</label>
+      <input type="text" class="w-full p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 outline-none transition-all"
+           [ngModel]="data['freight_charges']" (ngModelChange)="updateField('freight_charges', $event)" />
+    </div>
+    <div class="p-3">
+      <label class="text-xs font-semibold text-slate-500 mb-1">Shipped on Board Date</label>
+      <input type="text" class="w-full p-2 text-sm bg-slate-50 border border-transparent focus:bg-white focus:border-blue-300 focus:ring-1 outline-none transition-all"
+           [ngModel]="data['shipped_on_board_date']" (ngModelChange)="updateField('shipped_on_board_date', $event)" />
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 border border-slate-300 border-t-0 items-start">
+    <div class="col-span-1 border-r border-slate-300 p-3 h-full">
+      <label class="text-xs font-semibold text-slate-500 mb-1 block">Terms and Conditions</label>
+      <div class="text-xs text-slate-500 italic text-justify pr-2">
+        See original document styling. Default terms apply above for transport...
+      </div>
+    </div>
+    <div class="col-span-1 flex flex-col h-full bg-slate-50 p-3 gap-3">
+      <div>
+         <label class="text-xs font-semibold text-slate-500 mb-1 block">Place and Date of Issue</label>
+         <input type="text" class="w-full p-2 text-sm bg-white border border-slate-200 outline-none transition-all" [ngModel]="data['place_and_date_of_issue']" (ngModelChange)="updateField('place_and_date_of_issue', $event)"/>
+      </div>
+      <div>
+         <label class="text-xs font-semibold text-slate-500 mb-1 block">Signatory Company</label>
+         <input type="text" class="w-full p-2 text-sm bg-white border border-slate-200 outline-none transition-all" [ngModel]="data['signatory_company']" (ngModelChange)="updateField('signatory_company', $event)"/>
+      </div>
+      <div>
+         <label class="text-xs font-semibold text-slate-500 mb-1 block">Name of Authorized Signatory</label>
+         <input type="text" class="w-full p-2 text-sm bg-white border border-slate-200 outline-none transition-all" [ngModel]="data['name_of_authorized_signatory']" (ngModelChange)="updateField('name_of_authorized_signatory', $event)"/>
+      </div>
+    </div>
+  </div>
+
+</div>
