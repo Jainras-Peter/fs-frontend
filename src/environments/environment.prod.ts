@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://fs-backend-bbgt.onrender.com'
+  apiBaseUrl: 'http://localhost:5000'
 };
