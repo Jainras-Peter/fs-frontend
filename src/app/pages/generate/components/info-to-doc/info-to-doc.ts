@@ -10,6 +10,7 @@ import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 
 import { BillOfLadingTemplateComponent } from './template/bill-of-lading.component';
+import { CommercialInvoiceTemplateComponent } from './template/commercial-invoice.component';
 import { InfoToDocService, InfoToDocPayload } from '../../services/infotodoc.service';
 
 @Component({
@@ -23,7 +24,8 @@ import { InfoToDocService, InfoToDocPayload } from '../../services/infotodoc.ser
     DialogModule,
     InputTextModule,
     ToastModule,
-    BillOfLadingTemplateComponent
+    BillOfLadingTemplateComponent,
+    CommercialInvoiceTemplateComponent
   ],
   providers: [MessageService],
   templateUrl: './info-to-doc.html',
@@ -31,7 +33,8 @@ import { InfoToDocService, InfoToDocPayload } from '../../services/infotodoc.ser
 })
 export class InfoToDocComponent {
   availableTemplates = [
-    { id: 'BillOfLading', name: 'Bill of Lading' }
+    { id: 'BillOfLading', name: 'Bill of Lading' },
+    { id: 'CommercialInvoice', name: 'Commercial Invoice' }
   ];
   selectedTemplate = 'BillOfLading';
   templateData: Record<string, any> = {};

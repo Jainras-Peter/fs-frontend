@@ -17,6 +17,6 @@ export class InfoToDocService {
   private readonly apiUrl = `${environment.apiBaseUrl}/api/infotodoc`;
 
   generateDocument(payload: InfoToDocPayload): Observable<any> {
-    return this.http.post(`${this.apiUrl}/billoflading`, payload);
+    return this.http.post(`${this.apiUrl}/template`, payload);
   }
 }

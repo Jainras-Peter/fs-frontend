@@ -25,9 +25,16 @@
 
     <!-- Active Template Component Area -->
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden min-h-[50vh]">
-      <ng-container *ngIf="selectedTemplate === 'BillOfLading'">
-         <app-bill-of-lading-template [(data)]="templateData"></app-bill-of-lading-template>
-      </ng-container>
+        <!-- Dynamic Template Forms -->
+        <app-bill-of-lading-template *ngIf="selectedTemplate === 'BillOfLading'"
+            [data]="templateData"
+            (dataChange)="templateData = $event">
+        </app-bill-of-lading-template>
+
+        <app-commercial-invoice-template *ngIf="selectedTemplate === 'CommercialInvoice'"
+            [data]="templateData"
+            (dataChange)="templateData = $event">
+        </app-commercial-invoice-template>
 
       <div *ngIf="!selectedTemplate" class="flex items-center justify-center h-64 text-slate-400">
         <p>Please select a template from the top-right menu to begin.</p>
