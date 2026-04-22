@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, Output, EventEmitter} from '@angular/core';
 import {Shipment} from '../../../../booking/services/shipment.service';
 import {Archive, Boxes, LucideAngularModule, Milestone, Package, Scale} from 'lucide-angular';
 
@@ -13,6 +13,8 @@ import {Archive, Boxes, LucideAngularModule, Milestone, Package, Scale} from 'lu
 export class ShipmentDetails {
   @Input() mblNumber!: string;
   @Input() shipments!: Shipment[];
+  @Input() selectedShipments: Shipment[] = [];
+  @Output() toggle = new EventEmitter<{shipment: Shipment, isChecked: boolean}>();
 
   readonly PackageIcon = Package;
   readonly ArchiveIcon = Archive;
@@ -32,6 +34,10 @@ export class ShipmentDetails {
     this.shipments.filter((shipment: Shipment) => {
       return shipment.mbl_number !== this.mblNumber
     })
+  }
+
+  isShipmentSelected(shipment: Shipment): boolean {
+    return this.selectedShipments.some(s => s.shipment_id === shipment.shipment_id);
   }
 
   getGoodsDetails() {

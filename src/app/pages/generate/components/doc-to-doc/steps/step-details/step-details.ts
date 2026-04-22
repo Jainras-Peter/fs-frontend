@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule, ArrowLeft, ArrowRight, FileText } from 'lucide-angular';
 import { ButtonModule } from 'primeng/button';
+import { MessageService } from 'primeng/api';
 import {ShipmentDetails} from '../../../shared/shipment-details/shipment-details';
 import {Shipment} from '../../../../../booking/services/shipment.service';
 
@@ -23,6 +24,8 @@ export class StepDetailsComponent {
   mblNumber = '';
   selectedShipments: Shipment[] = [];
   isGenerating = false;
+
+  constructor(private messageService: MessageService) {}
 
   readonly ArrowLeft = ArrowLeft;
   readonly ArrowRight = ArrowRight;
@@ -55,11 +58,11 @@ export class StepDetailsComponent {
 
   generatePreview() {
     if (!this.mblNumber) {
-      alert("Please enter the Master BL number.");
+      this.messageService.add({ severity: 'warn', summary: 'Missing MBL', detail: 'Please enter the Master BL number.' });
       return;
     }
     if (this.selectedShipments.length === 0) {
-      alert("Please select at least one shipper.");
+      this.messageService.add({ severity: 'warn', summary: 'Missing Shipment', detail: 'Please select at least one shipment.' });
       return;
     }
 

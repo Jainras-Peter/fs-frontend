@@ -45,7 +45,12 @@
 <!--                </ng-container>-->
 
               @if(hasShipments) {
-                <app-shipment-details [mblNumber]="mblNumber" [shipments]="shipments"></app-shipment-details>
+                <app-shipment-details 
+                    [mblNumber]="mblNumber" 
+                    [shipments]="shipments"
+                    [selectedShipments]="selectedShipments"
+                    (toggle)="toggleShipment($event.shipment, $event.isChecked)">
+                </app-shipment-details>
               }
             </div>
         </div>

@@ -116,16 +116,13 @@ export class DocToDocComponent {
     this.formData.mblNumber = data.mblNumber;
     // data.linkedShipments contains selected NAMES. We need to map back to IDs.
 
-    const selectedIds = data.selectedShipments.map(name => {
-      const found = this.formData.shipmentsList.find(s => (s.shipment_id) === name.shipment_id);
-      return found ? found.shipper_id : name;
-    }).filter(id => id); // Remove nulls if any
+    const selectedIds = data.selectedShipments.map(s => s.shipment_id).filter(id => id);
 
     // Call /preview/hbl API
     this.setLoading(true);
     const payload = {
       mbl_number: this.formData.mblNumber,
-      shipper_list: selectedIds
+      shipment_list: selectedIds
     };
 
     this.http.post<any>('http://localhost:5000/api/v1/preview/hbl', payload)

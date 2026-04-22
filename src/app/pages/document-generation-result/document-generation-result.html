@@ -1,188 +1,74 @@
-<div class="result-page mx-auto flex min-h-[calc(100vh-4rem)] max-w-4xl flex-col px-4 py-10 sm:px-6 lg:px-8">
-  <!-- Step progress (same pattern as doc-to-doc; success = all steps ticked) -->
-  <nav class="mb-8" aria-label="Progress">
-    <div class="flex items-center justify-center space-x-4">
-      <!-- Step 1 -->
-      <div class="flex items-center">
-        <div
-          class="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500 text-sm font-bold text-white transition-colors duration-300"
-        >
-          <lucide-icon [img]="Check" class="h-4 w-4"></lucide-icon>
-        </div>
-        <span class="ml-2 text-sm font-medium text-slate-500 transition-colors duration-300">Upload</span>
-      </div>
-
-      <lucide-icon [img]="ChevronRight" class="h-4 w-4 text-slate-300"></lucide-icon>
-
-      <!-- Step 2 -->
-      <div class="flex items-center">
-        <div
-          class="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500 text-sm font-bold text-white transition-colors duration-300"
-        >
-          <lucide-icon [img]="Check" class="h-4 w-4"></lucide-icon>
-        </div>
-        <span class="ml-2 text-sm font-medium text-slate-500 transition-colors duration-300">Details</span>
-      </div>
-
-      <lucide-icon [img]="ChevronRight" class="h-4 w-4 text-slate-300"></lucide-icon>
-
-      <!-- Step 3: tick when success; on failure show active Finalize (blue + 3) -->
-      <div class="flex items-center">
-        <div
-          class="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold transition-colors duration-300"
-          [ngClass]="
-            isSuccess
-              ? 'bg-emerald-500 text-white'
-              : 'bg-blue-700 text-white'
-          "
-        >
-          @if (isSuccess) {
-            <lucide-icon [img]="Check" class="h-4 w-4"></lucide-icon>
-          } @else {
-            <span>3</span>
-          }
-        </div>
-        <span
-          class="ml-2 text-sm font-medium transition-colors duration-300"
-          [ngClass]="isSuccess ? 'text-slate-500' : 'text-blue-700'"
-          >Finalize</span
-        >
-      </div>
-    </div>
-  </nav>
-
-  <!-- Success / error hero -->
-  <div class="flex flex-1 flex-col items-center text-center">
+<div class="h-screen w-full bg-[url('/background.png')] bg-center bg-cover bg-no-repeat flex flex-col items-center justify-center p-4">
+  
+  <div class="flex flex-col items-center max-w-2xl w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <!-- Success / error hero -->
     <div
-      class="flex h-24 w-24 items-center justify-center rounded-2xl bg-slate-100 shadow-inner"
-      [class.bg-slate-100]="isSuccess"
-      [class.bg-amber-50]="!isSuccess"
+      class="flex h-24 w-24 items-center justify-center rounded-full bg-emerald-100 shadow-inner mb-6"
+      *ngIf="isSuccess"
     >
-      <span
-        class="flex h-14 w-14 items-center justify-center rounded-xl shadow-md"
-        [class.bg-emerald-600]="isSuccess"
-        [class.bg-amber-500]="!isSuccess"
-      >
-        <lucide-icon [img]="statusIcon" class="h-8 w-8 text-white"></lucide-icon>
+      <span class="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500 shadow-md text-white">
+        <lucide-icon [img]="Check" class="h-8 w-8 text-white"></lucide-icon>
       </span>
     </div>
 
-    <h1 class="mt-8 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+    <div
+      class="flex h-24 w-24 items-center justify-center rounded-full bg-amber-100 shadow-inner mb-6"
+      *ngIf="!isSuccess"
+    >
+      <span class="flex h-16 w-16 items-center justify-center rounded-full bg-amber-500 shadow-md text-white">
+        <lucide-icon [img]="AlertTriangle" class="h-8 w-8 text-white"></lucide-icon>
+      </span>
+    </div>
+
+    <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl mb-8">
       {{ statusHeading }}
     </h1>
 
-    <p class="mt-4 max-w-xl text-base leading-relaxed text-slate-500">
+    <p *ngIf="!isSuccess" class="text-base text-slate-600 text-center mb-8">
       {{ statusDescription }}
     </p>
 
-    @if (isSuccess && (hblNumber !== 'Not available')) {
-      <p class="mt-2 text-sm text-slate-400">
-        @if (hblNumber !== 'Not available') {
-          <span class="mx-2">·</span>
-        }
-        @if (hblNumber !== 'Not available') {
-          <span class="font-medium text-slate-500">HBL: {{ hblNumber }}</span>
-        }
-        @if (additionalDocumentCount > 0) {
-          <span class="ml-2">(+{{ additionalDocumentCount }} more)</span>
-        }
-      </p>
-    }
-
-    @if (isSuccess) {
-      <div
-        class="mt-10 flex w-full max-w-lg flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-center"
-        data-download-menu
-      >
-        <a
-          routerLink="/dashboard"
-          class="text-center text-base font-semibold text-blue-700 underline-offset-4 hover:underline sm:text-left"
-        >
-          Go to Dashboard
-        </a>
-
-        <div class="relative flex justify-center sm:ml-auto">
-          <button
-            type="button"
-            (click)="toggleDownloadMenu()"
-            [disabled]="!hasDownloads"
-            class="inline-flex min-w-[200px] items-center justify-center gap-2 rounded-xl bg-blue-900 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-950 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Download All
-            <lucide-icon [img]="ChevronDown" class="h-4 w-4 opacity-90"></lucide-icon>
-          </button>
-
-          @if (downloadMenuOpen && hasDownloads) {
-            <div
-              class="absolute left-1/2 top-full z-20 mt-2 flex max-h-[min(24rem,70vh)] w-[min(100vw-2rem,22rem)] -translate-x-1/2 flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg ring-1 ring-slate-900/5 sm:left-auto sm:right-0 sm:translate-x-0"
-              role="menu"
-            >
-              <p
-                class="shrink-0 border-b border-slate-100 px-4 pb-2 pt-3 text-xs font-semibold uppercase tracking-wide text-slate-400"
-              >
-                Individual files
-              </p>
-              <ul
-                class="download-menu-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain py-1"
-              >
-                @for (file of uploadedFiles; track file.url) {
-                  <li>
-                    <a
-                      [href]="file.url"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="flex items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-50"
-                      (click)="closeDownloadMenu()"
-                    >
-                      <span class="shrink-0" [ngClass]="fileIconClass(file.filename)">
-                        <lucide-icon [img]="FileText" class="h-5 w-5"></lucide-icon>
-                      </span>
-                      <span class="min-w-0 flex-1 truncate font-medium">{{ file.filename }}</span>
-                      <lucide-icon [img]="Download" class="h-4 w-4 shrink-0 text-slate-400"></lucide-icon>
-                    </a>
-                  </li>
-                }
-              </ul>
-              <div class="shrink-0 border-t border-slate-100 bg-white">
-                <button
-                  type="button"
-                  class="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-blue-800 transition hover:bg-slate-50 disabled:opacity-50"
-                  [disabled]="archiveLoading"
-                  (click)="downloadArchive()"
-                >
-                  <lucide-icon [img]="FolderArchive" class="h-5 w-5 shrink-0 text-blue-700"></lucide-icon>
-                  @if (archiveLoading) {
-                    <span>Preparing archive…</span>
-                  } @else {
-                    <span>Download Archive (.zip)</span>
-                  }
-                </button>
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-    } @else {
-      <div class="mt-10">
-        <a
-          routerLink="/dashboard"
-          class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white hover:bg-slate-800"
-        >
-          Back to Dashboard
-        </a>
-      </div>
-    }
-  </div>
-
-  <!-- Footer -->
-  <!-- <footer class="mt-auto border-t border-slate-200 pt-8">
-    <div class="flex flex-col gap-4 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
-      <p>© 2024 DocGenius Platform</p>
-      <div class="flex flex-wrap justify-center gap-4 sm:justify-end">
-        <a href="#" class="hover:text-slate-600">Privacy Policy</a>
-        <a href="#" class="hover:text-slate-600">Terms of Service</a>
-        <a href="#" class="hover:text-slate-600">Contact</a>
-      </div>
+    <!-- Document List Box -->
+    <div *ngIf="isSuccess && hasDownloads" class="w-full bg-white/80 backdrop-blur-md border border-slate-200 rounded-xl overflow-hidden shadow-sm mb-6">
+      <ul class="divide-y divide-slate-200">
+        <li *ngFor="let file of uploadedFiles" class="flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors">
+          <span class="font-semibold text-slate-700 text-sm truncate pr-4">{{ file.filename }}</span>
+          <a [href]="file.url" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 transition-colors">
+            <lucide-icon [img]="Download" class="h-5 w-5"></lucide-icon>
+          </a>
+        </li>
+      </ul>
     </div>
-  </footer> -->
+
+    <!-- Buttons -->
+    <div *ngIf="isSuccess" class="w-full flex flex-col gap-4">
+      <button
+        *ngIf="hasDownloads"
+        type="button"
+        [disabled]="archiveLoading"
+        (click)="downloadArchive()"
+        class="w-full flex items-center justify-center gap-2 rounded-xl bg-blue-700 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-blue-700/20 transition hover:bg-blue-800 disabled:opacity-50"
+      >
+        <lucide-icon [img]="Download" class="h-5 w-5"></lucide-icon>
+        <span *ngIf="!archiveLoading">Download All</span>
+        <span *ngIf="archiveLoading">Preparing archive...</span>
+      </button>
+
+      <a
+        routerLink="/dashboard"
+        class="text-sm font-semibold text-blue-700 hover:underline text-left mt-2"
+      >
+        Go to Dashboard
+      </a>
+    </div>
+
+    <div *ngIf="!isSuccess" class="w-full flex flex-col gap-4">
+      <a
+        routerLink="/dashboard"
+        class="w-full flex items-center justify-center rounded-xl bg-slate-900 px-6 py-4 text-base font-semibold text-white hover:bg-slate-800"
+      >
+        Back to Dashboard
+      </a>
+    </div>
+  </div>
 </div>

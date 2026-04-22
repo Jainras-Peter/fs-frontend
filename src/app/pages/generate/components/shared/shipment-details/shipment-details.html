@@ -2,7 +2,9 @@
   @for(shipment of shipments; track $index) {
     <div class="flex flex-row gap-4 p-4 rounded-lg bg-white shadow-sm border-white
     border border-solid hover:border-blue-700 transition-colors duration-300">
-      <input type="checkbox" class="size-4 rounded-lg mt-4"/>
+      <input type="checkbox" class="size-4 rounded-lg mt-4"
+             [checked]="isShipmentSelected(shipment)"
+             (change)="toggle.emit({shipment: shipment, isChecked: $any($event.target).checked})"/>
       <div class="flex flex-row gap-2">
         <div class="flex flex-row items-center justify-center bg-blue-700 rounded-lg
         p-4 w-max h-max">
