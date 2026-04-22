@@ -28,30 +28,17 @@
                 </div>
             </div>
 
-            <!-- Right Side Actions (Login/Signup placeholders) -->
+            <!-- Right Side Actions (Login/Signup/Logout) -->
             <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
-                <button class="text-slate-500 hover:text-slate-700 font-medium text-sm">Log in</button>
-                <button
-                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors text-sm">Sign
-                    up</button>
+                <ng-container *ngIf="userService.isLoggedIn$ | async; else loggedOut">
+                    <a routerLink="/profile" class="text-slate-500 hover:text-slate-700 font-medium text-sm">Profile</a>
+                    <button class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-medium py-2 px-4 rounded-md transition-colors text-sm" (click)="onLogout()">Log out</button>
+                </ng-container>
+                <ng-template #loggedOut>
+                    <a routerLink="/login" class="text-slate-500 hover:text-slate-700 font-medium text-sm">Log in</a>
+                    <a routerLink="/signup" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors text-sm">Sign up</a>
+                </ng-template>
             </div>
         </div>
     </div>
-    <nav class="nav-links">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
-      <a routerLink="/booking" routerLinkActive="active">Booking</a>
-      <a routerLink="/generate" routerLinkActive="active">Generate</a>
-      <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-    </nav>
-    <div class="nav-actions">
-      <ng-container *ngIf="userService.isLoggedIn$ | async; else loggedOut">
-        <a class="nav-login" routerLink="/profile">Profile</a>
-        <button pButton label="Log out" class="p-button-outlined p-button-secondary" (click)="onLogout()"></button>
-      </ng-container>
-      <ng-template #loggedOut>
-        <a class="nav-login" routerLink="/login">Log in</a>
-        <button pButton label="Sign up" class="nav-signup" routerLink="/signup"></button>
-      </ng-template>
-    </div>
-  </div>
 </header>

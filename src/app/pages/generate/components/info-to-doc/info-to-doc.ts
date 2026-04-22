@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LucideAngularModule, LayoutTemplate, ArrowRight, Edit3, Check, Save } from 'lucide-angular';
+import { LucideAngularModule, LayoutTemplate, ArrowRight, Edit3, Check, Save, Download, FileText } from 'lucide-angular';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
@@ -60,6 +60,8 @@ export class InfoToDocComponent {
   readonly Edit3 = Edit3;
   readonly Check = Check;
   readonly Save = Save;
+  readonly Download = Download;
+  readonly FileText = FileText;
 
   handleTemplateChange(event: any) {
     this.selectedTemplate = event.target.value;

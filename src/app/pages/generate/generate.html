@@ -1,14 +1,14 @@
-<div class="h-screen w-full bg-[#E2E8F0]">
+<div class="h-[calc(100vh-4rem)] w-full bg-[#E2E8F0] overflow-hidden">
     <div class="h-full flex flex-col md:flex-row">
 
         <!-- Left Navigation Sidebar -->
-        <aside class="h-screen absolute z-50">
+        <aside class="h-full z-50 shrink-0">
             <app-generate-sidebar [activeMode]="activeMode" (modeChange)="onModeChange($event)">
             </app-generate-sidebar>
         </aside>
 
         <!-- Main Content Area -->
-        <div class="relative flex-1 min-w-0 bg-[url('/background.png')] bg-center bg-cover bg-no-repeat ">
+        <div class="relative flex-1 min-w-0 h-full overflow-y-auto bg-[url('/background.png')] bg-center bg-cover bg-no-repeat">
             <!-- Loading Overlay -->
             <div *ngIf="isLoading"
                  class="absolute top-[40%] left-[40%] flex flex-col items-center justify-center">

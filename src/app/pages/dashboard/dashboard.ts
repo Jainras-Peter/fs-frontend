@@ -23,7 +23,7 @@ export class DashboardComponent implements OnInit {
   filteredData: DashboardDocument[] = [];
   typeCounts: { type: string, count: number }[] = [];
   selectedFilter: string = 'All';
-  documentTypes: string[] = ['All', 'House BL', 'Bill of Lading', 'Commercial Invoice', 'Quotation', 'Bill of Exchange'];
+  documentTypes: string[] = ['All', 'House Bill of Lading', 'Bill of Lading', 'Commercial Invoice', 'Quotation', 'Bill of Exchange'];
 
   constructor(private dashboardService: DashboardService, private cdr: ChangeDetectorRef) {}
 
@@ -52,7 +52,8 @@ export class DashboardComponent implements OnInit {
       this.filteredData = [...this.details.data];
     } else {
       this.filteredData = this.details.data.filter(doc => {
-        const type = doc.type || 'House BL';
+        let type = doc.type || 'House Bill of Lading';
+        if (type === 'House BL') type = 'House Bill of Lading';
         return type === this.selectedFilter;
       });
     }
@@ -61,16 +62,17 @@ export class DashboardComponent implements OnInit {
   calculateTypeCounts(): void {
     const counts: { [key: string]: number } = {};
     const shortNames: Record<string, string> = {
-      'House BL': 'HBL',
-      'Master BL': 'MBL',
-      'Bill of Lading': 'BOL',
-      'Commercial Invoice': 'INV',
+      'House BL': 'House Bill of Lading',
+      'House Bill of Lading': 'House Bill of Lading',
+      'Master BL': 'Master Bill of Lading',
+      'Bill of Lading': 'Bill of Lading',
+      'Commercial Invoice': 'Commercial Invoice',
       'Quotation': 'Quotation',
-      'Bill of Exchange': 'BOE'
+      'Bill of Exchange': 'Bill of Exchange'
     };
 
     this.details.data.forEach(doc => {
-      const type = doc.type || 'House BL';
+      const type = doc.type || 'House Bill of Lading';
       const shortName = shortNames[type] || type;
       counts[shortName] = (counts[shortName] || 0) + 1;
     });

@@ -1,4 +1,4 @@
-import { Component, HostListener, inject } from '@angular/core';
+import { Component, HostListener, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -31,6 +31,7 @@ type GenerationStatus = 'success' | 'failed';
 export class DocumentGenerationResultComponent {
   private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
+  private cdr = inject(ChangeDetectorRef);
 
   private readonly apiBase = API_CONFIG.v1;
 
@@ -143,6 +144,7 @@ export class DocumentGenerationResultComponent {
       .subscribe({
         next: (resp) => {
           this.archiveLoading = false;
+          this.cdr.detectChanges();
           const blob = resp.body;
           if (!blob) return;
           const cd = resp.headers.get('Content-Disposition');
@@ -160,6 +162,7 @@ export class DocumentGenerationResultComponent {
         },
         error: () => {
           this.archiveLoading = false;
+          this.cdr.detectChanges();
         }
       });
   }

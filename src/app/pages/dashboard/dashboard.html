@@ -74,7 +74,7 @@
               <span>{{ doc.filename }}</span>
             </div>
           </td>
-          <td><span class="badge">{{ doc.type || 'House BL' }}</span></td>
+          <td><span class="badge">{{ doc.type === 'House BL' ? 'House Bill of Lading' : (doc.type || 'House Bill of Lading') }}</span></td>
           <td>{{ doc.created_at | date:'MMM d, yyyy' }}</td>
           <td>
             <div class="action-buttons">

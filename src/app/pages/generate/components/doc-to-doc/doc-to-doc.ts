@@ -10,6 +10,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { DocGeneratorService } from '../../services/doc-generator.service';
 import { API_CONFIG } from '../../../../core/config/api.config';
+import { Shipment } from '../../../booking/services/shipment.service';
 
 @Component({
   selector: 'app-doc-to-doc',
@@ -114,7 +115,7 @@ export class DocToDocComponent {
 
   onDetailsComplete(data: { mblNumber: string, selectedShipments: Shipment[] }) {
     this.formData.mblNumber = data.mblNumber;
-    // data.linkedShipments contains selected NAMES. We need to map back to IDs.
+    this.formData.linkedShipments = data.selectedShipments;
 
     const selectedIds = data.selectedShipments.map(s => s.shipment_id).filter(id => id);
 

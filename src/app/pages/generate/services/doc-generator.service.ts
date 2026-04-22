@@ -11,8 +11,6 @@ export class DocGeneratorService {
   private readonly baseUrl = API_CONFIG.v1;
 
   generateHbl(payload: any, documentTo: string): Observable<any> {
-    // The Go backend expects DocumentTo inside the JSON body, not as a query param.
-    const augmentedPayload = { ...payload, documentTo };
-    return this.http.post<any>(`${this.baseUrl}/pdf-generator`, augmentedPayload);
+    return this.http.post<any>(`${this.baseUrl}/pdf-generator?documentTo=${encodeURIComponent(documentTo)}`, payload);
   }
 }

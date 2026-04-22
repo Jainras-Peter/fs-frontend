@@ -1,5 +1,5 @@
 <p-toast></p-toast>
-<div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+<div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto p-8 pb-16">
     <!-- Form View -->
     <ng-container *ngIf="!generationResult">
     <div class="flex items-center justify-between">
@@ -87,31 +87,51 @@
 
     <!-- Success View -->
     <ng-container *ngIf="generationResult">
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col items-center justify-center py-16 px-4">
-            <div class="h-20 w-20 bg-emerald-100 rounded-full flex items-center justify-center mb-6">
-                <lucide-icon [img]="Check" class="h-10 w-10 text-emerald-600"></lucide-icon>
-            </div>
-            
-            <h2 class="text-3xl font-bold text-slate-900 mb-2">Document Generated Successfully!</h2>
-            <p class="text-slate-500 text-center max-w-md mb-8">
-                Your <span class="font-semibold text-slate-700">{{ generationResult.template }}</span> template has been processed and saved as 
-                <span class="font-semibold text-slate-700">{{ generationResult.filename }}</span>.
-            </p>
-
-            <div class="flex items-center space-x-4">
-                <a [href]="generationResult.url" target="_blank"
-                   class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center shadow-md">
-                   Download / View PDF
-                </a>
-                <button (click)="goToDashboard()"
-                   class="bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-medium py-3 px-6 rounded-lg transition-colors">
-                   Go to Dashboard
-                </button>
-            </div>
-
-            <button (click)="generateAnother()" class="mt-8 text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors">
-                + Generate Another Document
-            </button>
+      <div class="flex flex-col items-center max-w-2xl mx-auto w-full py-8">
+        <!-- Success / error hero -->
+        <div class="flex h-24 w-24 items-center justify-center rounded-full bg-emerald-100 shadow-inner mb-6">
+          <span class="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500 shadow-md text-white">
+            <lucide-icon [img]="Check" class="h-8 w-8 text-white"></lucide-icon>
+          </span>
         </div>
+
+        <h1 class="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl mb-8">
+          Document Generated Successfully!
+        </h1>
+
+        <p class="text-base text-slate-600 text-center mb-8">
+            Your <span class="font-semibold text-slate-700">{{ generationResult.template }}</span> template has been processed and saved successfully.
+        </p>
+
+        <!-- Document List Box -->
+        <div class="w-full bg-white/80 backdrop-blur-md border border-slate-200 rounded-xl overflow-hidden shadow-sm mb-6">
+          <ul class="divide-y divide-slate-200">
+            <li class="flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors">
+              <span class="font-semibold text-slate-700 text-sm truncate pr-4">{{ generationResult.filename }}</span>
+              <a [href]="generationResult.url" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 transition-colors">
+                <lucide-icon [img]="Download" class="h-5 w-5"></lucide-icon>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Buttons -->
+        <div class="w-full flex flex-col gap-4">
+          <a [href]="generationResult.url" target="_blank"
+             class="w-full flex items-center justify-center gap-2 rounded-xl bg-blue-700 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-blue-700/20 transition hover:bg-blue-800">
+            <lucide-icon [img]="FileText" class="h-5 w-5"></lucide-icon>
+            View PDF
+          </a>
+
+          <button (click)="goToDashboard()"
+             class="text-sm font-semibold text-blue-700 hover:underline text-left mt-2 flex items-center justify-center w-full">
+            Go to Dashboard
+          </button>
+
+          <button (click)="generateAnother()" class="text-sm font-semibold text-blue-700 hover:underline text-left flex items-center justify-center w-full">
+            + Generate Another Document
+          </button>
+        </div>
+      </div>
     </ng-container>
 </div>
