@@ -41,8 +41,14 @@
   </div>
 
   <div class="recent-documents-section">
-    <div class="table-header">
+    <div class="table-header" style="display: flex; justify-content: space-between; items-center;">
       <h2>Recently Generated Documents</h2>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <label for="docFilter" style="font-size: 0.9rem; color: #4b5563; font-weight: 500;">Filter by Type:</label>
+        <select id="docFilter" [(ngModel)]="selectedFilter" (change)="applyFilter()" style="padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.9rem; outline: none; background-color: #f9fafb; color: #374151;">
+          <option *ngFor="let type of documentTypes" [value]="type">{{ type }}</option>
+        </select>
+      </div>
     </div>
     <table class="data-table">
       <thead>
@@ -55,7 +61,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let doc of details.data; let i = index">
+        <tr *ngFor="let doc of filteredData; let i = index">
           <td>{{ i + 1 }}</td>
           <td>
             <div class="doc-name-cell">
@@ -79,8 +85,8 @@
             </div>
           </td>
         </tr>
-        <tr *ngIf="details.data.length === 0">
-          <td colspan="5" class="text-center py-4 text-gray-500">No recently generated documents found.</td>
+        <tr *ngIf="filteredData.length === 0">
+          <td colspan="5" class="text-center py-4 text-gray-500">No documents found for this filter.</td>
         </tr>
       </tbody>
     </table>
