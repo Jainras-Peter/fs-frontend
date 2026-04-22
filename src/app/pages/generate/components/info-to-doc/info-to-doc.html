@@ -36,6 +36,16 @@
             (dataChange)="templateData = $event">
         </app-commercial-invoice-template>
 
+        <app-quotation-template *ngIf="selectedTemplate === 'Quotation'"
+            [data]="templateData"
+            (dataChange)="templateData = $event">
+        </app-quotation-template>
+
+        <app-bill-of-exchange-template *ngIf="selectedTemplate === 'BillOfExchange'"
+            [data]="templateData"
+            (dataChange)="templateData = $event">
+        </app-bill-of-exchange-template>
+
       <div *ngIf="!selectedTemplate" class="flex items-center justify-center h-64 text-slate-400">
         <p>Please select a template from the top-right menu to begin.</p>
       </div>

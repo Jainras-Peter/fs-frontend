@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 
 import { BillOfLadingTemplateComponent } from './template/bill-of-lading.component';
 import { CommercialInvoiceTemplateComponent } from './template/commercial-invoice.component';
+import { QuotationTemplateComponent } from './template/quotation.component';
+import { BillOfExchangeTemplateComponent } from './template/bill-of-exchange.component';
 import { InfoToDocService, InfoToDocPayload } from '../../services/infotodoc.service';
 
 @Component({
@@ -25,7 +27,9 @@ import { InfoToDocService, InfoToDocPayload } from '../../services/infotodoc.ser
     InputTextModule,
     ToastModule,
     BillOfLadingTemplateComponent,
-    CommercialInvoiceTemplateComponent
+    CommercialInvoiceTemplateComponent,
+    QuotationTemplateComponent,
+    BillOfExchangeTemplateComponent
   ],
   providers: [MessageService],
   templateUrl: './info-to-doc.html',
@@ -34,7 +38,9 @@ import { InfoToDocService, InfoToDocPayload } from '../../services/infotodoc.ser
 export class InfoToDocComponent {
   availableTemplates = [
     { id: 'BillOfLading', name: 'Bill of Lading' },
-    { id: 'CommercialInvoice', name: 'Commercial Invoice' }
+    { id: 'CommercialInvoice', name: 'Commercial Invoice' },
+    { id: 'Quotation', name: 'Quotation' },
+    { id: 'BillOfExchange', name: 'Bill of Exchange' }
   ];
   selectedTemplate = 'BillOfLading';
   templateData: Record<string, any> = {};
