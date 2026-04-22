@@ -1,27 +1,65 @@
-<div class="sticky top-24 space-y-2">
-    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 px-3">Generation Mode</h3>
+<div class="sticky top-24 space-y-2 p-4 bg-white/25 backdrop-blur-xs border border-solid border-slate-300 h-full w-max rounded-tr-xl rounded-br-xl
+transition-all ease-in-out duration-500">
+    <div class="flex justify-between items-center mb-4 " [ngClass]="{ 'mb-6': panelIcon === PanelLeftOpen }">
+      <h2
+        class="text-sm font-bold text-slate-400 uppercase"
+        [ngClass]="{ 'hidden': panelIcon === PanelLeftOpen }"
+      >
+        Generation Mode
+      </h2>
 
-    <button (click)="setMode('doc-to-doc')"
-        class="w-full flex items-center p-3 rounded-lg text-sm font-medium transition-all"
-        [ngClass]="activeMode === 'doc-to-doc' ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-200 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'">
+      <lucide-icon
+        [img]="panelIcon"
+        class="size-6 cursor-pointer text-slate-500 hover:stroke-blue-700 transition-colors duration-300"
+        (click)="onPanelClick()"
+      ></lucide-icon>
+
+    </div>
+
+  @if (panelIcon === PanelLeftOpen) {
+    <div class="flex flex-col">
+      <lucide-icon [img]="FileText" class="size-6 cursor-pointer mb-6 text-slate-500 hover:text-blue-700"
+                   [ngClass]="[activeMode === 'doc-to-doc' ? 'text-blue-700' : 'text-slate-500']"></lucide-icon>
+      <lucide-icon [img]="Keyboard" class="size-6 cursor-pointer text-slate-500 hover:text-blue-700"
+                   [ngClass]="[activeMode === 'info-to-doc' ? 'text-blue-700' : 'text-slate-500']"></lucide-icon>
+    </div>
+  }
+
+    <button
+      (click)="setMode('doc-to-doc')"
+      class="w-full cursor-pointer flex items-center p-3 rounded-lg text-sm font-medium transition-all"
+      [ngClass]="[
+        activeMode === 'doc-to-doc'
+          ? 'bg-blue-700/30 backdrop-blur-[3px] text-blue-700 ring-1 ring-blue-700 shadow-sm z-10'
+          : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900',
+        panelIcon === PanelLeftOpen ? 'hidden' : ''
+      ]"
+    >
         <div class="p-2 rounded-md mr-3" [ngClass]="activeMode === 'doc-to-doc' ? 'bg-blue-100' : 'bg-slate-100'">
             <lucide-icon [img]="FileText" class="h-5 w-5"></lucide-icon>
         </div>
         <div class="text-left">
             <div class="font-semibold">Document to Document</div>
-            <div class="text-xs opacity-75 font-normal">MBL to HBL Conversion</div>
+            <div class="text-xs font-normal opacity-75">MBL to HBL Conversion</div>
         </div>
     </button>
 
-    <button (click)="setMode('info-to-doc')"
-        class="w-full flex items-center p-3 rounded-lg text-sm font-medium transition-all"
-        [ngClass]="activeMode === 'info-to-doc' ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-200 shadow-sm' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'">
+    <button
+      (click)="setMode('info-to-doc')"
+      class="cursor-pointer w-full flex items-center p-3 rounded-lg text-sm font-medium transition-all"
+      [ngClass]="[
+        activeMode === 'info-to-doc'
+          ? 'bg-blue-700/30 backdrop-blur-[3px] text-blue-700 ring-1 ring-blue-700 shadow-sm z-10'
+          : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900',
+        panelIcon === PanelLeftOpen ? 'hidden' : ''
+      ]"
+    >
         <div class="p-2 rounded-md mr-3" [ngClass]="activeMode === 'info-to-doc' ? 'bg-blue-100' : 'bg-slate-100'">
             <lucide-icon [img]="Keyboard" class="h-5 w-5"></lucide-icon>
         </div>
-        <div class="text-left">
+        <div class="text-left bg-blue-">
             <div class="font-semibold">Info to Document</div>
-            <div class="text-xs opacity-75 font-normal">Manual Data Entry</div>
+            <div class="text-xs font-normal opacity-75">Manual Data Entry</div>
         </div>
     </button>
 </div>

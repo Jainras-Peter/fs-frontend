@@ -1,30 +1,55 @@
 import { Component, EventEmitter, Output, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LucideAngularModule, Upload, Check, ChevronDown, ArrowRight } from 'lucide-angular';
+import {
+  LucideAngularModule,
+  Upload,
+  Check,
+  ArrowRight,
+  LucideIconData,
+  FileCheckCorner
+} from 'lucide-angular';
+import {InputDropdown} from '../../../shared/input-dropdown/input-dropdown';
+import {ToastModule} from 'primeng/toast';
+import {MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-step-upload',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, FormsModule],
+  imports: [CommonModule, LucideAngularModule, FormsModule,
+  InputDropdown, ToastModule],
   templateUrl: './step-upload.html',
-  styleUrl: './step-upload.css'
+  styleUrl: './step-upload.css',
+  providers: [MessageService]
 })
 export class StepUploadComponent {
-  @Output() complete = new EventEmitter<{ image: string, file: File, mblType: string, hblType: string, mode: string }>();
-  private cdr = inject(ChangeDetectorRef);
+  @Output() complete = new EventEmitter<{
+      image: string,
+      file: File,
+      mblType: string,
+      hblType: string,
+      model: string
+    }>();
 
-  mblType = 'Master BL';
-  hblType = 'House BL';
-  mode = 'FCL';
-  uploadedImage: string | null = null;
+  private cdr = inject(ChangeDetectorRef);
+  private messageService = inject(MessageService);
+
+  mblType!:string;
+  hblType!:string;
+  model!: string
+
+  aiModels = ['Grok', 'GPT-OSS-120B']
+  outputDocs = ["House Bill of Lading", "Invoice"]
+  inputDocs= ["Ocean Bill of Lading", "Master Bill of Lading"];
+
+  uploadedImage: string = '';
   uploadedFile: File | null = null;
   fileName: string | null = null;
   isPdf = false;
 
   readonly Upload = Upload;
   readonly Check = Check;
-  readonly ChevronDown = ChevronDown;
+  readonly FileUploaded: LucideIconData = FileCheckCorner;
   readonly ArrowRight = ArrowRight;
 
   onFileSelected(event: any) {
@@ -59,10 +84,15 @@ export class StepUploadComponent {
         file: this.uploadedFile!,
         mblType: this.mblType,
         hblType: this.hblType,
-        mode: this.mode
+        model: this.model
       });
     } else {
-      alert("Please upload a document first.");
+      this.messageService.add({
+        severity: 'error',
+        summary: "Processing Failed",
+        detail: 'Please upload a document first.',
+        life: 3000
+      })
     }
   }
 }

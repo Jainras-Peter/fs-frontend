@@ -1,16 +1,17 @@
-<div class="space-y-8 max-w-2xl mx-auto animate-in fade-in slide-in-from-right-8 duration-300">
+<div class="select-none flex flex-col gap-2 md:min-w-3xl lg:min-w-4xl py-4 animate-in fade-in slide-in-from-right-8 duration-500">
     <div class="flex items-center mb-4">
         <button (click)="back.emit()" class="p-2 text-slate-400 hover:text-slate-600 transition-colors mr-2">
             <lucide-icon [img]="ArrowLeft" class="h-5 w-5"></lucide-icon>
         </button>
         <div>
-            <h1 class="text-2xl font-bold text-slate-900">Step 2: Document Details</h1>
+            <h1 class="text-2xl font-bold text-slate-900">Document Details</h1>
             <p class="text-slate-500 text-sm">Provide specific identifiers for the new document.</p>
         </div>
     </div>
 
-    <div class="space-y-6 bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-        <div class="space-y-2">
+    <div class="flex flex-col gap-4 w-full">
+        <div class="flex flex-col gap-2">
+          <!--Master Bill of Lading Number Input-->
             <label class="text-sm font-bold text-slate-700">Master BL Number</label>
             <div class="relative">
                 <lucide-icon [img]="FileText"
@@ -19,32 +20,46 @@
                     class="w-full bg-slate-50 border border-slate-300 rounded-lg py-2.5 pl-12 pr-4 text-slate-900 focus:ring-2 focus:ring-blue-500 outline-none"
                     [(ngModel)]="mblNumber" />
             </div>
+
+
         </div>
 
-        <div class="space-y-2">
-            <label class="text-sm font-bold text-slate-700">Select Shipper</label>
-            <div class="space-y-2 max-h-48 overflow-y-auto border border-slate-200 rounded-lg p-2 bg-slate-50">
-                <div *ngIf="!hasShippers" class="p-4 text-center text-red-500 font-medium bg-red-50 rounded-md">
+        <div class="flex flex-col gap-4 bg-[#F3F4F6]/25 backdrop-blur-xs border-slate-300 border-solid border rounded-2xl p-8">
+            <label class="text-sm font-bold text-slate-700">Select Shipment(s)</label>
+            <div class="space-y-2 w-full max-h-150 overflow-y-auto">
+                <div *ngIf="!hasShipments" class="p-4 text-center text-red-500 font-medium bg-red-50 rounded-md">
                     No shipper linked with this MBL
                 </div>
-                <!-- Only show map if shippers exist -->
-                <ng-container *ngIf="hasShippers">
-                    <label *ngFor="let shipper of MOCK_SHIPPERS; let i = index"
-                        class="flex items-center p-2 rounded hover:bg-white cursor-pointer group transition-colors">
-                        <input type="checkbox" name="shipper_choice" [checked]="selectedShippers.includes(shipper)"
-                            (change)="toggleShipper(shipper, $any($event.target).checked)"
-                            class="w-4 h-4 text-blue-700 border-slate-300 rounded focus:ring-blue-500" />
-                        <span class="ml-3 text-sm text-slate-600 group-hover:text-slate-900">{{ shipper }}</span>
-                    </label>
-                </ng-container>
+<!--                &lt;!&ndash; Only show map if shippers exist &ndash;&gt;-->
+<!--                <ng-container *ngIf="hasShipments">-->
+<!--                    <label *ngFor="let shipment of shipments; let i = index"-->
+<!--                        class="flex items-center p-2 rounded hover:bg-white cursor-pointer group transition-colors">-->
+<!--                        <input type="checkbox" name="shipper_choice"-->
+<!--                               [checked]="selectedShipments[i].shipment_id.includes(shipment.shipment_id)"-->
+<!--                            (change)="toggleShipment(shipment, $any($event.target).checked)"-->
+<!--                            class="w-4 h-4 text-blue-700 border-slate-300 rounded focus:ring-blue-500" />-->
+<!--                        <span class="ml-3 text-sm text-slate-600 group-hover:text-slate-900">-->
+<!--                          {{ shipment.shipment_id }}-->
+<!--                        </span>-->
+<!--                    </label>-->
+<!--                </ng-container>-->
+
+              @if(hasShipments) {
+                <app-shipment-details 
+                    [mblNumber]="mblNumber" 
+                    [shipments]="shipments"
+                    [selectedShipments]="selectedShipments"
+                    (toggle)="toggleShipment($event.shipment, $event.isChecked)">
+                </app-shipment-details>
+              }
             </div>
         </div>
     </div>
 
-    <div class="flex justify-center">
+    <div class="flex justify-center mt-4">
         <button
             class="w-full md:w-64 bg-blue-700 text-white rounded-lg py-3 px-4 font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center shadow-lg shadow-blue-700/20 disabled:opacity-50 disabled:cursor-not-allowed"
-            (click)="generatePreview()" [disabled]="isGenerating || !hasShippers">
+            (click)="generatePreview()" [disabled]="isGenerating || !hasShipments">
             <span *ngIf="!isGenerating">Generate Preview</span>
             <span *ngIf="isGenerating">Generating...</span>
             <lucide-icon *ngIf="!isGenerating" [img]="ArrowRight" class="h-5 w-5 ml-2"></lucide-icon>

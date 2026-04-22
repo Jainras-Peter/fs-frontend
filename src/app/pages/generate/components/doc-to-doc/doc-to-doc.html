@@ -1,20 +1,13 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
+<div class="h-full w-full py-6 relative">
     <p-toast position="top-center"></p-toast>
 
-    <!-- Loading Overlay -->
-    <div *ngIf="isLoading"
-        class="absolute inset-0 bg-white/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center rounded-3xl">
-        <lucide-icon [img]="Loader2" class="h-12 w-12 text-blue-600 animate-spin mb-4"></lucide-icon>
-        <p class="text-slate-600 font-medium animate-pulse">Processing document...</p>
-    </div>
-
     <!-- Step Progress -->
-    <div class="mb-8">
-        <div class="flex items-center justify-center space-x-4">
+    <div class="w-full mb-4">
+        <div class="flex items-center justify-center gap-4">
             <!-- Step 1 -->
             <div class="flex items-center">
                 <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors duration-300"
-                    [ngClass]="currentStep === 1 ? 'bg-blue-700 text-white' : currentStep > 1 ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-500'">
+                    [ngClass]="currentStep === 1 ? 'bg-blue-700 text-white' : currentStep > 1 ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-500 border border-dashed border-blue-700'">
                     <lucide-icon *ngIf="currentStep > 1" [img]="Check" class="h-4 w-4"></lucide-icon>
                     <span *ngIf="currentStep <= 1">1</span>
                 </div>
@@ -22,44 +15,62 @@
                     [ngClass]="currentStep === 1 ? 'text-blue-700' : 'text-slate-500'">Upload</span>
             </div>
 
-            <lucide-icon [img]="ChevronRight" class="h-4 w-4 text-slate-300"></lucide-icon>
+            <div class="w-50 h-0.5 bg-[#CBD5E1]"></div>
 
             <!-- Step 2 -->
             <div class="flex items-center">
-                <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors duration-300"
+                <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors duration-300
+              border border-dashed border-blue-700"
                     [ngClass]="currentStep === 2 ? 'bg-blue-700 text-white' : currentStep > 2 ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-500'">
                     <lucide-icon *ngIf="currentStep > 2" [img]="Check" class="h-4 w-4"></lucide-icon>
                     <span *ngIf="currentStep <= 2">2</span>
                 </div>
-                <span class="ml-2 text-sm font-medium transition-colors duration-300"
+                <span class="ml-1 text-sm font-medium transition-colors duration-300"
                     [ngClass]="currentStep === 2 ? 'text-blue-700' : 'text-slate-500'">Details</span>
             </div>
 
-            <lucide-icon [img]="ChevronRight" class="h-4 w-4 text-slate-300"></lucide-icon>
+            <div class="w-50 h-0.5 bg-[#CBD5E1]"></div>
 
             <!-- Step 3 -->
             <div class="flex items-center">
-                <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors duration-300"
+                <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors duration-300
+              border border-dashed border-blue-700"
                     [ngClass]="currentStep === 3 ? 'bg-blue-700 text-white' : 'bg-slate-200 text-slate-500'">
                     <span>3</span>
                 </div>
                 <span class="ml-2 text-sm font-medium transition-colors duration-300"
                     [ngClass]="currentStep === 3 ? 'text-blue-700' : 'text-slate-500'">Finalize</span>
             </div>
+
+            <div class="w-50 h-0.5 bg-[#CBD5E1]"></div>
+
+            <!-- Step 4 -->
+            <div class="flex items-center">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors duration-300
+              border border-dashed border-blue-700"
+                   [ngClass]="currentStep === 4 ? 'bg-blue-700 text-white' : 'bg-slate-200 text-slate-500'">
+                <span>4</span>
+              </div>
+              <span class="ml-2 text-sm font-medium transition-colors duration-300"
+                    [ngClass]="currentStep === 4 ? 'text-blue-700' : 'text-slate-500'">Generate</span>
+            </div>
         </div>
     </div>
 
     <!-- Step Content -->
-    <div class="mt-8">
+    @if (!isLoading) {
+      <div class="flex flex-row w-full justify-center items-center">
         <app-step-upload *ngIf="currentStep === 1" (complete)="onUploadComplete($event)">
         </app-step-upload>
 
         <app-step-details *ngIf="currentStep === 2" [initialMbl]="formData.mblNumber"
-            [availableShippers]="formData.selectedShippers" (back)="onBack()" (complete)="onDetailsComplete($event)">
+                          [shipments]="formData.shipmentsList" (back)="onBack()"
+                          (complete)="onDetailsComplete($event)">
         </app-step-details>
 
         <app-step-finalize *ngIf="currentStep === 3" [previewData]="formData.hblList" [mblNumber]="formData.mblNumber"
-            (back)="onBack()" (confirm)="onConfirm()" (refresh)="handleRefresh()">
+                           (back)="onBack()" (confirm)="onConfirm()" (refresh)="handleRefresh()">
         </app-step-finalize>
-    </div>
+      </div>
+    }
 </div>
