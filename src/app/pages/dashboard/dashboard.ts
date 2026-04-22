@@ -21,6 +21,7 @@ export class DashboardComponent implements OnInit {
   };
 
   filteredData: DashboardDocument[] = [];
+  typeCounts: { type: string, count: number }[] = [];
   selectedFilter: string = 'All';
   documentTypes: string[] = ['All', 'House BL', 'Bill of Lading', 'Commercial Invoice', 'Quotation', 'Bill of Exchange'];
 
@@ -35,6 +36,7 @@ export class DashboardComponent implements OnInit {
       next: (res) => {
         console.log('Dashboard details received:', res);
         this.details = res;
+        this.calculateTypeCounts();
         this.applyFilter();
         this.cdr.detectChanges();
       },
@@ -54,6 +56,25 @@ export class DashboardComponent implements OnInit {
         return type === this.selectedFilter;
       });
     }
+  }
+
+  calculateTypeCounts(): void {
+    const counts: { [key: string]: number } = {};
+    const shortNames: Record<string, string> = {
+      'House BL': 'HBL',
+      'Master BL': 'MBL',
+      'Bill of Lading': 'BOL',
+      'Commercial Invoice': 'INV',
+      'Quotation': 'Quotation',
+      'Bill of Exchange': 'BOE'
+    };
+
+    this.details.data.forEach(doc => {
+      const type = doc.type || 'House BL';
+      const shortName = shortNames[type] || type;
+      counts[shortName] = (counts[shortName] || 0) + 1;
+    });
+    this.typeCounts = Object.keys(counts).map(k => ({ type: k, count: counts[k] }));
   }
 
   viewDocument(url: string): void {
