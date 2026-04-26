@@ -3,12 +3,15 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DashboardService, DashboardDetails, DashboardDocument } from './services/dashboard.service';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
-  providers: [DatePipe],
+  imports: [CommonModule, RouterModule, FormsModule, ConfirmDialogModule, ToastModule],
+  providers: [DatePipe, ConfirmationService, MessageService],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -25,7 +28,12 @@ export class DashboardComponent implements OnInit {
   selectedFilter: string = 'All';
   documentTypes: string[] = ['All', 'House Bill of Lading', 'Bill of Lading', 'Commercial Invoice', 'Quotation', 'Bill of Exchange'];
 
-  constructor(private dashboardService: DashboardService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private dashboardService: DashboardService, 
+    private cdr: ChangeDetectorRef,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit(): void {
     this.loadDetails();
@@ -85,16 +93,26 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  deleteDocument(id: string): void {
-    if (confirm('Are you sure you want to delete this document?')) {
-      this.dashboardService.deleteDocument(id).subscribe({
-        next: () => {
-          this.loadDetails(); // reload list
-        },
-        error: (err) => {
-          console.error('Error deleting document', err);
-        }
-      });
-    }
+  deleteDocument(doc: DashboardDocument): void {
+    this.confirmationService.confirm({
+      message: `Are you sure you want to delete this document?`,
+      header: 'Confirm Deletion',
+      icon: 'pi pi-exclamation-triangle',
+      acceptIcon: "none",
+      rejectIcon: "none",
+      rejectButtonStyleClass: "p-button-text",
+      accept: () => {
+        this.dashboardService.deleteDocument(doc.id).subscribe({
+          next: () => {
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: `${doc.filename} deleted successfully!` });
+            this.loadDetails(); // reload list
+          },
+          error: (err) => {
+            console.error('Error deleting document', err);
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete document.' });
+          }
+        });
+      }
+    });
   }
 }

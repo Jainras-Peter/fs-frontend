@@ -41,22 +41,22 @@
     </div>
 
     <!-- Buttons -->
-    <div *ngIf="isSuccess" class="w-full flex flex-col gap-4">
+    <div *ngIf="isSuccess" class="w-full flex justify-between items-center gap-4 mt-2">
       <button
         *ngIf="hasDownloads"
         type="button"
         [disabled]="archiveLoading"
         (click)="downloadArchive()"
-        class="w-full flex items-center justify-center gap-2 rounded-xl bg-blue-700 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-blue-700/20 transition hover:bg-blue-800 disabled:opacity-50"
+        class="flex-1 flex items-center justify-center gap-2 rounded-lg bg-blue-700 px-5 py-3.5 text-sm font-semibold text-white shadow-md shadow-blue-700/20 transition hover:bg-blue-800 disabled:opacity-50"
       >
-        <lucide-icon [img]="Download" class="h-5 w-5"></lucide-icon>
+        <lucide-icon [img]="Download" class="h-4 w-4"></lucide-icon>
         <span *ngIf="!archiveLoading">Download All</span>
         <span *ngIf="archiveLoading">Preparing archive...</span>
       </button>
 
       <a
         routerLink="/dashboard"
-        class="text-sm font-semibold text-blue-700 hover:underline text-left mt-2"
+        class="flex-1 flex items-center justify-center rounded-lg bg-white border border-slate-300 px-5 py-3.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm"
       >
         Go to Dashboard
       </a>

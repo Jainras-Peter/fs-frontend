@@ -78,6 +78,19 @@ export class StepUploadComponent {
   }
 
   startProcess() {
+    if (!this.mblType) {
+      this.messageService.add({ severity: 'warn', summary: 'Validation', detail: 'Please select "From" document type.', life: 3000 });
+      return;
+    }
+    if (!this.hblType) {
+      this.messageService.add({ severity: 'warn', summary: 'Validation', detail: 'Please select "To" document type.', life: 3000 });
+      return;
+    }
+    if (!this.model) {
+      this.messageService.add({ severity: 'warn', summary: 'Validation', detail: 'Please select "Model".', life: 3000 });
+      return;
+    }
+
     if (this.uploadedImage) {
       this.complete.emit({
         image: this.uploadedImage,

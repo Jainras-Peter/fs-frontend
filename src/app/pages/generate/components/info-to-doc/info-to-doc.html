@@ -116,19 +116,21 @@
         </div>
 
         <!-- Buttons -->
-        <div class="w-full flex flex-col gap-4">
-          <a [href]="generationResult.url" target="_blank"
-             class="w-full flex items-center justify-center gap-2 rounded-xl bg-blue-700 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-blue-700/20 transition hover:bg-blue-800">
-            <lucide-icon [img]="FileText" class="h-5 w-5"></lucide-icon>
-            View PDF
-          </a>
+        <div class="w-full flex flex-col gap-4 mt-2">
+          <div class="w-full flex justify-between items-center gap-4">
+            <a [href]="generationResult.url" target="_blank"
+               class="flex-1 flex items-center justify-center gap-2 rounded-lg bg-blue-700 px-5 py-3.5 text-sm font-semibold text-white shadow-md shadow-blue-700/20 transition hover:bg-blue-800">
+              <lucide-icon [img]="FileText" class="h-4 w-4"></lucide-icon>
+              View PDF
+            </a>
 
-          <button (click)="goToDashboard()"
-             class="text-sm font-semibold text-blue-700 hover:underline text-left mt-2 flex items-center justify-center w-full">
-            Go to Dashboard
-          </button>
+            <button (click)="goToDashboard()"
+               class="flex-1 flex items-center justify-center rounded-lg bg-white border border-slate-300 px-5 py-3.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition shadow-sm">
+              Go to Dashboard
+            </button>
+          </div>
 
-          <button (click)="generateAnother()" class="text-sm font-semibold text-blue-700 hover:underline text-left flex items-center justify-center w-full">
+          <button (click)="generateAnother()" class="text-sm font-semibold text-blue-700 hover:underline text-center w-full mt-2">
             + Generate Another Document
           </button>
         </div>
