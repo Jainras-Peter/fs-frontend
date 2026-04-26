@@ -2,3 +2,11 @@
 
 @import "tailwindcss";
 @import "primeicons/primeicons.css";
+
+/* Force light mode browser styles (scrollbars, default inputs) */
+:root {
+  color-scheme: light !important;
+}
+
+/* Force tailwind dark mode to only apply with .app-dark class */
+@custom-variant dark (&:where(.app-dark, .app-dark *));
