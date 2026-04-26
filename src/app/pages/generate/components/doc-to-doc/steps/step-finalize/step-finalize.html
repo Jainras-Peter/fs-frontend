@@ -13,6 +13,80 @@
 
     <div class="grid lg:grid-cols-12 gap-8">
         <div class="lg:col-span-12">
+            
+            <!-- Top Section: Scores and Action Buttons -->
+            <div class="flex justify-between items-start mb-8 w-full max-w-4xl mx-auto" *ngIf="previewData[currentIndex]">
+                <!-- Left: Scores -->
+                <div class="flex gap-10">
+                    <!-- Validation Score -->
+                    <div class="flex flex-col items-center">
+                        <div class="relative w-24 h-24">
+                            <svg class="w-full h-full transform -rotate-90">
+                                <circle cx="48" cy="48" r="40" stroke="currentColor" stroke-width="8" fill="transparent" class="text-slate-100" />
+                                <circle cx="48" cy="48" r="40" stroke="currentColor" stroke-width="8" fill="transparent" stroke-linecap="round"
+                                    [attr.stroke-dasharray]="40 * 2 * 3.14159"
+                                    [attr.stroke-dashoffset]="(40 * 2 * 3.14159) - ((40 * 2 * 3.14159) * (previewData[currentIndex].validation_score || 0) / 100)"
+                                    class="text-blue-500 transition-all duration-1000 ease-out" />
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                <span class="text-xl font-bold text-slate-700">{{ previewData[currentIndex].validation_score || 0 | number:'1.0-0' }}%</span>
+                            </div>
+                        </div>
+                        <span class="mt-3 font-semibold text-slate-600 text-[11px] uppercase tracking-wider">Validation</span>
+                    </div>
+
+                    <!-- Accuracy Score -->
+                    <div class="flex flex-col items-center">
+                        <div class="relative w-24 h-24">
+                            <svg class="w-full h-full transform -rotate-90">
+                                <circle cx="48" cy="48" r="40" stroke="currentColor" stroke-width="8" fill="transparent" class="text-slate-100" />
+                                <circle cx="48" cy="48" r="40" stroke="currentColor" stroke-width="8" fill="transparent" stroke-linecap="round"
+                                    [attr.stroke-dasharray]="40 * 2 * 3.14159"
+                                    [attr.stroke-dashoffset]="(40 * 2 * 3.14159) - ((40 * 2 * 3.14159) * (previewData[currentIndex].accuracy_score || 0) / 100)"
+                                    class="text-sky-400 transition-all duration-1000 ease-out" />
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                <span class="text-xl font-bold text-slate-700">{{ previewData[currentIndex].accuracy_score || 0 | number:'1.0-0' }}%</span>
+                            </div>
+                        </div>
+                        <span class="mt-3 font-semibold text-slate-600 text-[11px] uppercase tracking-wider">Accuracy</span>
+                    </div>
+                </div>
+
+                <!-- Right: Action Buttons -->
+                <div class="flex flex-col gap-3 w-56 mt-2">
+                    <ng-container *ngIf="!isEditing">
+                        <button (click)="handleConfirm()"
+                            class="w-full bg-blue-700 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-800 flex items-center justify-center transition-colors shadow-md disabled:opacity-50"
+                            [disabled]="isLoading">
+                            <span *ngIf="!isLoading">Confirm & Generate</span>
+                            <span *ngIf="isLoading">Generating...</span>
+                        </button>
+                        <button (click)="toggleEdit()"
+                            class="w-full bg-white border border-blue-200 text-blue-700 py-2.5 rounded-lg font-semibold hover:bg-blue-50 flex items-center justify-center transition-colors">
+                            <lucide-icon [img]="Edit3" class="h-4 w-4 mr-2"></lucide-icon>
+                            Edit Document
+                        </button>
+                    </ng-container>
+
+                    <ng-container *ngIf="isEditing">
+                        <button (click)="save()"
+                            class="w-full bg-emerald-600 text-white py-2.5 rounded-lg font-semibold hover:bg-emerald-700 flex items-center justify-center transition-colors shadow-md disabled:opacity-50"
+                            [disabled]="isLoading">
+                            <lucide-icon [img]="Save" class="h-4 w-4 mr-2" *ngIf="!isLoading"></lucide-icon>
+                            <span *ngIf="!isLoading">Save Changes</span>
+                            <span *ngIf="isLoading">Saving...</span>
+                        </button>
+                        <button (click)="cancelEdit()"
+                            class="w-full bg-red-50 border border-red-200 text-red-700 py-2.5 rounded-lg font-semibold hover:bg-red-100 flex items-center justify-center transition-colors">
+                            <lucide-icon [img]="X" class="h-4 w-4 mr-2"></lucide-icon>
+                            Cancel
+                        </button>
+                    </ng-container>
+                </div>
+            </div>
+
+            <!-- Center Section: Document Preview -->
             <div class="flex items-start justify-center gap-6">
                 <!-- Prev Button -->
                 <button (click)="prev()" [disabled]="currentIndex === 0"
@@ -21,8 +95,7 @@
                 </button>
 
                 <div class="flex-1 max-w-4xl">
-                    <app-hbl-preview-full [data]="previewData[currentIndex]"
-                        [isEditing]="isEditing"></app-hbl-preview-full>
+                    <app-hbl-preview-full [data]="previewData[currentIndex]" [isEditing]="isEditing"></app-hbl-preview-full>
 
                     <div class="mt-4 text-center text-sm font-medium text-slate-500">
                         Document {{ currentIndex + 1 }} of {{ previewData.length }}
@@ -36,40 +109,15 @@
                 </button>
             </div>
 
-            <div class="flex space-x-4 mt-8 max-w-3xl mx-auto" *ngIf="!isEditing">
+            <!-- Bottom Section: Back to list -->
+            <!-- <div class="flex justify-center mt-10" *ngIf="!isEditing">
                 <button (click)="back.emit()"
-                    class="flex-1 bg-white border border-slate-300 text-slate-700 py-3 rounded-lg font-semibold hover:bg-slate-50 flex items-center justify-center transition-colors">
+                    class="w-48 bg-white border border-slate-300 text-slate-700 py-2.5 rounded-lg font-semibold hover:bg-slate-50 flex items-center justify-center transition-colors shadow-sm">
                     <lucide-icon [img]="ArrowLeft" class="h-4 w-4 mr-2"></lucide-icon>
                     Back to List
                 </button>
-                <button (click)="toggleEdit()"
-                    class="flex-1 bg-white border border-blue-200 text-blue-700 py-3 rounded-lg font-semibold hover:bg-blue-50 flex items-center justify-center transition-colors">
-                    <lucide-icon [img]="Edit3" class="h-4 w-4 mr-2"></lucide-icon>
-                    Edit Document
-                </button>
-                <button (click)="handleConfirm()"
-                    class="flex-1 bg-blue-700 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 flex items-center justify-center transition-colors shadow-lg shadow-blue-700/20 disabled:opacity-50"
-                    [disabled]="isLoading">
-                    <span *ngIf="!isLoading">Confirm & Generate</span>
-                    <span *ngIf="isLoading">Generating...</span>
-                </button>
-            </div>
+            </div> -->
 
-            <!-- Edit Mode Buttons -->
-            <div class="flex space-x-4 mt-8 max-w-xl mx-auto" *ngIf="isEditing">
-                <button (click)="cancelEdit()"
-                    class="flex-1 bg-red-50 border border-red-200 text-red-700 py-3 rounded-lg font-semibold hover:bg-red-100 flex items-center justify-center transition-colors">
-                    <lucide-icon [img]="X" class="h-4 w-4 mr-2"></lucide-icon>
-                    Cancel
-                </button>
-                <button (click)="save()"
-                    class="flex-1 bg-emerald-600 text-white py-3 rounded-lg font-semibold hover:bg-emerald-700 flex items-center justify-center transition-colors shadow-lg shadow-emerald-600/20 disabled:opacity-50"
-                    [disabled]="isLoading">
-                    <lucide-icon [img]="Save" class="h-4 w-4 mr-2" *ngIf="!isLoading"></lucide-icon>
-                    <span *ngIf="!isLoading">Save Changes</span>
-                    <span *ngIf="isLoading">Saving...</span>
-                </button>
-            </div>
         </div>
     </div>
 </div>

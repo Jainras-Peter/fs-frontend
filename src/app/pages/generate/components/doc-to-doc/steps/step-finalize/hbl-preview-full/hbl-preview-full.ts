@@ -14,11 +14,13 @@ import { FormsModule } from '@angular/forms';
     .hbl-grid {
       display: grid;
       grid-template-columns: repeat(12, minmax(0, 1fr));
-      border: 1px solid #000;
+      border: 1px solid #cbd5e1;
+      border-bottom: 0; /* Let cells handle bottom border to avoid double border */
+      border-right: 0;
     }
     .hbl-cell {
-      border-right: 1px solid #000;
-      border-bottom: 1px solid #000;
+      border-right: 1px solid #cbd5e1;
+      border-bottom: 1px solid #cbd5e1;
       padding: 4px;
       font-size: 11px;
       min-height: 24px;

@@ -83,7 +83,6 @@ export class StepFinalizeComponent {
         this.isLoading = false;
         this.isEditing = false;
         this.messageService.add({ severity: 'success', summary: 'HBL Updated', detail: 'Document saved successfully' });
-        this.refresh.emit();
         // Data is already updated in local array via ngModel binding.
       },
       error: (err) => {
