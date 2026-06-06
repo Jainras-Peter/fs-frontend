@@ -6,9 +6,11 @@ import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { ToastModule } from 'primeng/toast';
 
+import { DocAiBotComponent } from './components/doc-ai-bot/doc-ai-bot';
+
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, CommonModule, ToastModule],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, CommonModule, ToastModule, DocAiBotComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
