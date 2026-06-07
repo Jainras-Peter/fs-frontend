@@ -1,0 +1,104 @@
+<!-- Floating Toggle Button -->
+<div class="doc-ai-button-wrapper" *ngIf="!isOpen">
+  <button class="doc-ai-toggle" (click)="toggleChat()">
+    <span class="icon-stars">✨</span>
+    <span>DocAI</span>
+  </button>
+</div>
+
+<!-- Chat Window Overlay -->
+<div class="doc-ai-chat-window" *ngIf="isOpen">
+  <!-- Header -->
+  <div class="chat-header">
+    <div class="header-info">
+      <div class="header-title-row">
+        <h3>FreightDocs AI</h3>
+      </div>
+      <div class="header-subtitle-row">
+        <span class="status-dot"></span>
+        <span class="subtitle">SHIPMENT INTELLIGENCE ASSISTANT</span>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <!-- Locked Model Selector -->
+      <div class="model-selector">
+        <span>Groq</span>
+        <i class="pi pi-chevron-down" style="font-size: 0.7rem; margin-left: 4px;"></i>
+      </div>
+      <button class="close-btn" (click)="closeChat()">
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Scrollable Area -->
+  <div class="chat-body" #chatScroll>
+    
+    <!-- Initial State / Empty State Suggestions -->
+    <div class="empty-state" *ngIf="messages.length === 0">
+      <div class="ai-icon-large">
+        <span class="icon-stars">✨</span>
+      </div>
+      <p class="greeting">How can I assist with your freight operations today?</p>
+      
+      <div class="suggestion-cards">
+        <button class="suggestion-card" (click)="setQuickAction('Track shipment by MBL')">
+          <span>Track shipment by MBL</span>
+          <i class="pi pi-arrow-right"></i>
+        </button>
+        <button class="suggestion-card" (click)="setQuickAction('Upload a Bill of Lading')">
+          <span>Upload a Bill of Lading</span>
+          <i class="pi pi-file"></i>
+        </button>
+        <button class="suggestion-card" (click)="setQuickAction('Find linked shipments')">
+          <span>Find linked shipments</span>
+          <i class="pi pi-link"></i>
+        </button>
+        <button class="suggestion-card" (click)="setQuickAction('How to add a shipper?')">
+          <span>How to add a shipper?</span>
+          <i class="pi pi-user-plus"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Message Thread -->
+    <div class="message-thread" *ngIf="messages.length > 0">
+      <div *ngFor="let msg of messages" class="message-wrapper" [ngClass]="msg.role">
+        <div class="message-bubble" [ngClass]="msg.role" [innerHTML]="parseMarkdown(msg.content)">
+        </div>
+      </div>
+      
+      <!-- Loading indicator -->
+      <div class="message-wrapper assistant" *ngIf="isLoading">
+        <div class="message-bubble assistant loading">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Input Area -->
+  <div class="chat-footer">
+    <div class="input-container">
+      <button class="mode-btn pin-btn">
+        <i class="pi pi-question-circle"></i>
+      </button>
+      
+      <input 
+        type="text" 
+        placeholder="Ask about cargo, manifests, SOPs..." 
+        [(ngModel)]="userInput"
+        (keydown.enter)="sendMessage()"
+        [disabled]="isLoading"
+      />
+      
+      <button class="send-btn" [disabled]="!userInput.trim() || isLoading" (click)="sendMessage()">
+        <i class="pi pi-send"></i>
+      </button>
+    </div>
+    <div class="footer-disclaimer">
+      AI responses may reference shipment and freight document data.
+    </div>
+  </div>
+</div>
