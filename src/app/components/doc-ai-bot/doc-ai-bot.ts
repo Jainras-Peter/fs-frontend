@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild, AfterViewChecked, ChangeDetectorRef, 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -61,7 +62,7 @@ export class DocAiBotComponent implements AfterViewChecked {
     };
 
     // Make POST request to the local agent/generate API
-    this.http.post<any>('http://localhost:10000/agent/generate', payload).subscribe({
+    this.http.post<any>(`${environment.aiServerUrl}/agent/generate`, payload).subscribe({
       next: (res) => {
         this.ngZone.run(() => {
           if (res && res.response) {
